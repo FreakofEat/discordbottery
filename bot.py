@@ -1,13 +1,16 @@
-import discord
+# import discord
 from discord.ext import commands
-import asyncio
+# import asyncio
 import random
-import configparser
+# import configparser
 from cogs import tests
+import os
 
+'''
 config = configparser.ConfigParser()
 config.read('config')
 bot_token = config['discord']['BotToken']
+'''
 
 prefixes = ['`', '?']
 description = '''
@@ -44,4 +47,4 @@ async def on_ready():
 
 if __name__ == '__main__':
     bot.add_cog(tests.Games(bot))
-    bot.run(bot_token)
+    bot.run(str(os.environ.get('DISCORD_TOKEN')))
