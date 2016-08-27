@@ -1,0 +1,256 @@
+youtube voice,%|*CHECK_MESSAGEQ*%|,website,false,|%
+play voice,%|*CHECK_MESSAGEQ*%|,website,false,|%
+Y voice,%|*CHECK_MESSAGE*%|,website,false,|%
+y voice,%|*CHECK_MESSAGEQ*%|,website,false,|%
+image message,%|*IMAGE_SEARCH*%|,false,false,|%
+music voice,%|*CHECK_MESSAGEQ*%|,gpm,false,|%
+m voice,%|*CHECK_MESSAGEQ*%|,gpm,false,|%
+radio voice,%|*CHECK_MESSAGERADIO*%|,gpm,false,|%
+album voice,%|*CHECK_MESSAGEALBUM*%|,gpm,false,|%
+cool message,%|cooooooooooooooooooooooooool%|,true,false,|%
+poop message,%|hey relax%|,false,false,|%
+v voice,%|C:/Users/raghavan/PycharmProjects/discordtest/audio/Valerie.wav%|,file,false,|%
+valerie voice,%|C:/Users/raghavan/PycharmProjects/discordtest/audio/Steve Winwood - Valerie.wav%|,file,false,|%
+neovalerie voice,%|C:/Users/raghavan/PycharmProjects/discordtest/audio/neovalerie.wav%|,file,false,|%
+sorrysong voice,%|D:/Music/Main Library/Albums/Beyoncé/Lemonade (2016)/04. Sorry.mp3%|,file,false,|%
+6inch voice,%|D:/Music/Main Library/Albums/Beyoncé/Lemonade (2016)/05. 6 Inch.mp3%|,file,false,|%
+lovedrought voice,%|D:/Music/Main Library/Albums/Beyoncé/Lemonade (2016)/07. Love Drought.mp3%|,file,false,|%
+formation voice,%|D:/Music/Main Library/Albums/Beyoncé/Lemonade (2016)/12. Formation.mp3%|,file,false,|%
+lemonade voice,%|D:/Music/Main Library/Albums/Beyoncé/Lemonade (2016)/lemonade.mp3%|,file,false,|%
+V message,%|VALERIE E EE%|,true,true,v,|%
+surprise message,%|http://www.bbhstore.com/bayonet-black-horse-36-hole-special/%|,false,false,|%
+surprise2 message,%|H O R S E 3 6%|,false,false,|%
+surprise3 message,%|.
+H O R S E 3 6
+O
+R
+S
+E
+3
+6%|,false,false,|%
+surprise4? message,%|no!%|,false,false,|%
+guessedit voice,%|https://www.youtube.com/watch?v=qFa4s-edu20%|,website,true,|%
+CUBE voice,%|https://www.youtube.com/watch?v=4aGDCE6Nrz0%|,website,false,|%
+duel voice,%|https://www.youtube.com/watch?v=0JvcqVbnI1k%|,website,false,|%
+wasntme voice,%|https://www.youtube.com/watch?v=2g5Hz17C4is%|,website,false,|%
+canadapocket voice,%|https://www.youtube.com/watch?v=VnZlAOSEmYQ%|,website,false,|%
+meme message,%|Hahahahahah. Meme%|,true,false,|%
+bolegdeh voice,%|https://www.youtube.com/watch?v=Y1pVQkmcTso%|,website,false,|%
+OJ message,%|send the ep my man%|,true,false,|%
+xanderkingolight message,%|and DON'T pointlessly place the blame on someone else.%|,true,false,|%
+juice voice,%|https://www.youtube.com/watch?v=726Ujz_KOHE%|,website,false,|%
+pitbull message,%|@Pitbull makes party music not message music.Always been place for that in #HipHop.As he gets older he will have more 2 say about life.%|,false,false,|%
+racist voice,%|https://www.youtube.com/watch?v=qpObCUeOe5Y%|,website,false,|%
+tgif voice,%|https://www.youtube.com/watch?v=kfVsfOSbJY0%|,website,false,|%
+pppp message,%|peepeepoopoo%|,true,false,|%
+canada message,%|https://www.youtube.com/watch?v=VnZlAOSEmYQ%|,false,false,|%
+canada voice,%|https://www.youtube.com/watch?v=VnZlAOSEmYQ%|,website,false,|%
+ccpppp message,%|cumcumpeepeepoopoo%|,true,false,|%
+haha message,%|whats the joke?%|,false,false,|%
+Jaden message,%|Real eyes realize real lies%|,true,false,|%
+ianni message,%|Is that gun loaded?%|,true,false,|%
+chesthair message,%|May I sit down?%|,true,false,|%
+6000000 voice,%|https://www.youtube.com/watch?v=HoLs0V8T5AA%|,website,false,|%
+hehe message,%|do you have something to share with the class?%|,true,false,|%
+haha message,%|do you have something to share with the class?%|,true,false,|%
+COOL voice,%|https://www.youtube.com/watch?v=VaPGhBfy28I%|,website,false,|%
+realmusic voice,%|https://www.youtube.com/watch?v=Z1MHfA5v3Co%|,website,false,|%
+menumusic voice,%|https://www.youtube.com/watch?v=sC0cvwnG0Ik%|,website,false,|%
+SHOES voice,%|https://www.youtube.com/watch?v=3HjIljJd-o0%|,website,false,|%
+tfwnogf voice,%|https://www.youtube.com/watch?v=P115vmpTz_c%|,website,false,|%
+lol message,%|lol%|,false,false,|%
+homo? message,%|haha no homo! lol%|,true,false,|%
+gay message,%|he will never come out thus giving you the strength to come out and finally come to terms with your own homosexuality that plagues you everyday that you still havent come to terms with%|,true,false,|%
+GIRUGAMESH voice,%|https://www.youtube.com/watch?v=TWLeRaMdye0%|,website,false,|%
+whowillsurvive voice,%|C:/Users/raghavan/PycharmProjects/discordtest/audio/Who Will Survive In America.mp3%|,file,false,|%
+kanye voice,%|https://www.youtube.com/watch?v=19k2dq_5kZo%|,website,false,|%
+imthemap voice,%|https://www.youtube.com/watch?v=VdQcdfd0Fec%|,website,false,|%
+NiceMeme voice,%|https://www.youtube.com/watch?v=L8ZqSW5j-AQ%|,website,false,|%
+trapqueen voice,%|https://www.youtube.com/watch?v=Zvo0Vm_3XIQ%|,website,false,|%
+NICE voice,%|https://www.youtube.com/watch?v=xwjVuvJUTUA%|,website,false,|%
+beepbeep voice,%|https://www.youtube.com/watch?v=D9JUCskdhxU%|,website,false,|%
+kk message,%|Okay :exclamation:%|,true,false,|%
+EveryPlantCanDoThis voice,%|https://www.youtube.com/watch?v=C1_uez5WX1o%|,website,false,|%
+ethan message,%|FUCK THE FREE WORLD%|,true,false,|%
+LOL message,%|LOOOL%|,false,false,|%
+powerbottom voice,%|https://www.youtube.com/watch?v=8vqb9uC31Bk%|,website,false,|%
+thatslife message,%|say la v%|,true,false,|%
+hail voice,%|https://www.youtube.com/watch?v=YLPJXesHI6k%|,website,false,|%
+achilles voice,%|https://www.youtube.com/watch?v=fQOmhY-LDOA%|,website,false,|%
+please message,%|Please, my friend%|,true,false,|%
+goodshit message,%|(chorus: right there)%|,false,false,|%
+rude message,%|RUDE. >.> ^.^ <.<%|,false,false,|%
+caillou voice,%|https://www.youtube.com/watch?v=Fz9cZoE45QI%|,website,false,|%
+brainblast voice,%|https://www.youtube.com/watch?v=VJo3fe3IAEI%|,website,false,|%
+onaroll voice,%|https://www.youtube.com/watch?v=YSUndtX1Qb0%|,website,false,|%
+relativity voice,%|https://www.youtube.com/watch?v=PfeaZK2uMyE%|,website,false,|%
+cowards voice,%|https://www.youtube.com/watch?v=m71jKyo8h1I%|,website,false,|%
+nice voice,%|https://www.youtube.com/watch?v=a8c5wmeOL9o%|,website,false,|%
+horrible voice,%|https://www.youtube.com/watch?v=yerwwZWXtdQ%|,website,false,|%
+xander message,%|It's quite funny that you would say that to be honest. You're quite wrong about your accusation in me, I merely wish to do my own business. Yet you people persistently blame me for things that I never did, and having no evidence against me to continue to do so. I think you people should stop harassing me about these sort of blasphemic things before I get mad. I don't exactly care about other server admins, and if you think that I would do anything against them then you are one hell of a severely inaccurate person. My personality as a perfectionist and a 'grammar nazi' got me hated? I don't exactly care after that. If you're going to blame someone, blame your inferior server admins for failing to protect their server from themselves. If you continue to think that I did something that obviously harbours some sort of malicious intent then I have nothing else to say, because nothing else I will do will make you believe otherwise. Remember one thing, it's quite easy to pull the wool over someone's eyes, don't believe everything as it seems, and DON'T pointlessly place the blame on someone else.%|,false,false,|%
+LMAO message,%|haha are you serious%|,false,false,|%
+HAHA message,%|do you need to go have a talk with the principal?%|,true,false,|%
+snout voice,%|http://i.4cdn.org/wsg/1457015709189.webm%|,website,false,|%
+neat message,%|Hah! NEAT-O%|,false,false,|%
+! message,%|:exclamation:%|,true,false,|%
+? message,%|:question:%|,true,false,|%
+hehe message,%|is something funny?%|,true,false,|%
+internallaughter message,%|I'll ask the bus driver and the both of us will individually finger each and every last one of you. PERIOD.%|,true,false,|%
+imfedupwithnightcore voice,%|https://www.youtube.com/watch?v=u6_s538INy0%|,website,false,|%
+odd voice,%|https://www.youtube.com/watch?v=2TPQQQa4mxY%|,website,false,|%
+broom voice,%|https://www.youtube.com/watch?v=X_Ood79AKMw%|,website,false,|%
+galenté message,%|You didn't have to do that. ALSO, it's kinda weird.%|,true,false,|%
+lol message,%|HELP THAT MAN HE'S DROWNING%|,true,false,|%
+hi message,%|hello%|,true,false,|%
+laugh message,%|HAHAHAHAHAHAHA LOOOOOOL DUDE HAHAHAHAHA%|,true,false,|%
+intromusic voice,%|https://www.youtube.com/watch?v=-9LX3fptM2Q%|,website,false,|%
+HILARIOUS voice,%|https://www.youtube.com/watch?v=Jl2Q-Mh4j8M%|,website,false,|%
+boku voice,%|https://www.youtube.com/watch?v=4QaH_HEm0lY%|,website,false,|%
+getdown voice,%|C:/Users/raghavan/PycharmProjects/discordtest/audio/Christodisco Get Down.mp3%|,file,false,|%
+psychopath voice,%|C:/Users/raghavan/PycharmProjects/discordtest/audio/Christodisco Psychopath.mp3%|,file,false,|%
+yougotitbad voice,%|C:/Users/raghavan/PycharmProjects/discordtest/audio/Christodisco You Got It Bad.mp3%|,file,false,|%
+osu message,%|my peepee is ruined%|,true,false,|%
+HY message,%|HELL YEAH%|,true,false,|%
+HKY message,%|HECK YEAH%|,true,false,|%
+hky message,%|h*ck yeah%|,true,false,|%
+hy message,%|hell yeah dude lol%|,true,false,|%
+bored message,%|why dont you go outside?%|,true,false,|%
+Hey! voice,%|https://www.youtube.com/watch?v=7zkX6kfnWbk%|,website,false,|%
+neoarthur voice,%|https://soundcloud.com/chancetherapper/everyday-wonderful-arthur%|,website,false,|%
+tgiw voice,%|https://www.youtube.com/watch?v=q2OZtHgE5tA%|,website,false,|%
+no message,%|YOU CAN'T DO THAT; YOU CAN'T SAY NO!!!%|,true,false,|%
+hoohoojuices message,%|I want to be lauren mayberry's little baby tampon boy. i want to turn into a little crying baby and then suck on her breasts. her magic breast milk would turn me into a little baby tampon boy. she would stick me into her hoo-hoo and i would wait with anticipation spouting little baby goo-goo ga-gas waiting for her to bleed all over me. i want to feel her lauren mayberry blood inside my little goo-goo ga-ga baby tampon body. i want to absorb her hoo-hoo juices inside my little baby tampon boy body and goo-goo ga-ga like a little rolly-polly baby boy. it would be orgasmic to know i am one with her hoo-hoo lauren mayberry blood and i would giggle and goo-goo ga-ga and yelp with little baby boy excitement as i roll around in her lauren mayberry hoo-hoo and revel in her red juices, slurping them into my soft little baby tampon boy goo-goo ga-ga body. then i want her to pull me out and squeeze and wring my little baby tampon boy body so that her lauren mayberry hoo-hoo blood and juices spill all over her lauren mayberry face. it would hurt and i would scream in pained goo-goo ga-gas as pain envelops my little baby tampon boy body until i reach full climax and turn back into grown human man.%|,false,false,|%
+rapdentree voice,%|https://www.youtube.com/watch?v=MqkWSqO4mFY%|,website,false,|%
+max message,%|we got a nice traffic light going on%|,false,false,|%
+sukhbir message,%|my man%|,false,false,|%
+lmao message,%|lamo%|,false,false,|%
+xam message,%|we got a bad traffic light going on%|,false,false,|%
+truth message,%|tru say my dude%|,true,false,|%
+wave message,%|STRENGTH THROUGH DISCIPLINE, STRENGTH THROUGH COMMUNITY, STRENGTH THROUGH ACTION%|,true,false,|%
+yeezus message,%|i just talked to jesus, he said "what up yeezus?", i said "shit, i'm chilling, tryna stack these miillions"%|,true,false,|%
+raining voice,%|https://www.youtube.com/watch?v=CvBfHwUxHIk%|,website,false,|%
+paulwept voice,%|https://soundcloud.com/neilcic/imma-let-it-be%|,website,false,|%
+hump voice,%|https://www.youtube.com/watch?v=iEe_eraFWWs%|,website,false,|%
+datingtips voice,%|https://www.youtube.com/watch?v=D74BJpWzHGw%|,website,false,|%
+cheapJaden message,%|realize realize realize%|,true,false,|%
+beebs voice,%|https://www.youtube.com/watch?v=kffacxfA7G4%|,website,false,|%
+thingonhiseye voice,%|https://www.youtube.com/watch?v=4JipHEz53sU%|,website,false,|%
+WIllow voice,%|https://www.youtube.com/watch?v=y-MJEx5TxkQ%|,website,false,|%
+iyiyi voice,%|https://www.youtube.com/watch?v=a3jQ-2SrQPo%|,website,false,|%
+kiwi message,%|cheps%|,true,false,|%
+pokerface message,%|muh muh muh MUH!%|,true,false,|%
+69 message,%|lol nice%|,false,false,|%
+girugamesh message,%|AW YEAH%|,true,false,|%
+waves message,%|Waves don't die
+Let me crash here for the moment
+I don't need to own it
+No lie
+Waves don't die, baby
+Let me crash here for a moment
+Baby I don't, I don't need to own...%|,true,false,|%
+sorry message,%|i ain't sorry%|,false,false,|%
+dingdong voice,%|https://www.youtube.com/watch?v=z13qnzUQwuI%|,website,false,|%
+we'redone message,%|reported, blocked, unfriended, deleted and muted%|,true,false,|%
+donezo message,%|reported, blocked, unfriended, deleted and muted%|,true,false,|%
+close message,%|almost! let me try%|,true,false,|%
+POOP message,%|People Order Our Patties%|,true,false,|%
+almost message,%|not quite! i'll give it a go%|,true,false,|%
+uhoh message,%|spaghetti-owes!%|,true,false,|%
+fingerinthebootyassbitch message,%|father stretch my anus, pt. 2%|,true,false,|%
+upman message,%|What's up man?%|,true,false,|%
+wow message,%|one million troops woaow%|,true,false,|%
+wakemeup voice,%|https://www.youtube.com/watch?v=dfyNnUgK8qE%|,website,false,|%
+cantwakeup voice,%|https://www.youtube.com/watch?v=efpvRt4bBvQ%|,website,false,|%
+fishing message,%|FISTING?!?!?%|,true,false,|%
+ohyeah voice,%|https://www.youtube.com/watch?v=SU0Ypufo6BM%|,website,false,|%
+classic message,%|.
+c l a s s i c
+l
+a
+s
+s
+i
+c%|,false,false,|%
+realshit message,%|(CHORUS: RIGHT THERE)%|,false,false,|%
+nimble message,%|💞Daddy💞 be nimble🚶🏻 Daddy be quick🏃🏻💨 Daddy has a rock🗿 hard dick 🍆😍! 1⃣cummy💦 2⃣cummy💦💦 3⃣cummy💦💦💦 4⃣💦💦💦💦! Daddy cums💦 so much he can't cum any more🙈🙉🙊! Ghost cummy👻💦 Ghost cummy👻💦 don't be scared❌😖❌! There's always more cummies💦👅 that can be shared👬! Daddy makes me ☁squishy☁ Daddy makes me 💧wet💧Daddy treats me like his little pet🐈🐩🐕! Send this to 69 💯TRUE💯 Daddy's or else you'll 🚫never🚫 get any cummies💦💦💦 again 😦😳😎%|,false,false,|%
+thicc message,%|😩 😩%|,false,false,|%
+goodshit message,%|👀 👌%|,false,false,|%
+badshit message,%|(chorus: ⁿᵒᵗ ᵗʰᵉʳᵉ)%|,false,false,|%
+badshit message,%|do NOT sign me the FUCK up 👎👀👎👀👎👀👎👀👎👀 bad shit ba̷̶ ԁ sHit 👎 thats ❌ some bad 👎👎shit right 👎👎 th 👎 ere 👎👎👎 right ❌ there ❌ ❌ if i do ƽaү so my selｆ🚫 i say so 🚫 thats not what im talking about right there right there (chorus: ʳᶦᵍʰᵗ ᵗʰᵉʳᵉ) mMMMMᎷМ 🚫 👎 👎👎НO0ОଠＯOOＯOОଠଠOoooᵒᵒᵒᵒᵒᵒᵒᵒᵒ 👎 👎👎 👎 🚫 👎 👀 👀 👀 👎👎Bad shit%|,false,false,|%
+quiet message,%|you will be ashamed of your words & deeds%|,false,false,|%
+THICC message,%|😩 😩 😩 💦 😩 😩 💦 😩 😩 😩 😩 💦 😩%|,false,false,|%
+hello message,%|say hello to my little friend @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%|,true,false,|%
+smile message,%|Click! Why did you blink!?%|,true,false,|%
+HEADON message,%|APPLY DIRECTLY TO THE FOREHEAD%|,true,false,|%
+ohyes voice,%|https://www.youtube.com/watch?v=bLgOL7Wf_Rg%|,website,false,|%
+!updog message,%|what the fuck did you say?%|,false,false,|%
+yes message,%|YOU BET❗%|,false,false,|%
+sick message,%|§įčķ%|,true,false,|%
+joeymiller message,%|En 1996, Joey Miller, élève de 9e année en Colombie-Britannique, et son ami Thomas Litchfield s'amusaient avec le tricycle de la petite soeur de Joey. Quelques essais de sauts à 180° et de bunny hops déchaînés ont fini par détruite le tricycle. L'idée d'inventer un nouveau vélo pour adolescents, le tryke a vu le jour. Ce tricycle, sans siège ni pédales, a fait fureur quand on l'a lancé à l'Exposition internationale de la bicyclette en 1997 aux États-Unis. Aujourd'hui, Tryke Industries, une entreprise fondée par Joey et des membres de sa famille, fait des affaires d'or. Visite leur site Web. Joey développe en ce moment un prototype (avec frein) pour faire du tryking alpin. Peut-être qu'un jour le tryking fera partie des Jeux extrêmes en Californie!%|,false,false,|%
+badjoke message,%|CARLOS!!!!!!!%|,true,false,|%
+telephone message,%|@@@@@@ stop telephoning @@@@@@@@@@@@@@@ im busy%|,true,false,|%
+diagnose message,%|According to Web-MD you may have cancer%|,true,false,|%
+tbh message,%|tbh%|,true,false,|%
+meme? message,%|MAY DAY MAY MAYS INCOMING%|,true,false,|%
+comewithme message,%|Am I under arrest? AM I BEING DETAINED?%|,true,false,|%
+pleasecalmdown message,%|is there a problem with me filming you? i know my rights. DONT TOUCH ME!%|,true,false,|%
+backthatassup message,%|!y back that ass up%|,false,false,|%
+ruthless message,%|😮 😮 😮 😮%|,false,false,|%
+brb message,%|ok, why are you telling me though?%|,true,false,|%
+coolbrackets message,%|【】%|,false,false,|%
+yaaas voice,%|https://www.youtube.com/watch?v=ks2Yfgx35cU%|,website,false,|%
+raghavan message,%|delete this%|,false,false,|%
+eattheeggs voice,%|https://www.youtube.com/watch?v=1MWWp7_wlMU%|,website,false,|%
+aesthetics voice,%|https://www.youtube.com/watch?v=cU8HrO7XuiE%|,website,false,|%
+movie voice,%|https://www.youtube.com/watch?v=L1ps5ARJOCc%|,website,false,|%
+GREEKONVICTORIADAY? message,%|αβξδεφγηιςκλμνοπθρστυωωχψζ%|,true,false,|%
+weird message,%|Galenté%|,true,false,|%
+yaas message,%|😂 😂 YOU GO GURL!!!%|,true,false,|%
+obnd message,%|!youtube old boots new dirt%|,false,false,|%
+s message,%|~stop%|,false,false,|%
+remindme message,%|NO REEEEEMINDERRRS%|,false,false,|%
+xma message,%|we got a filthy horrid traffic light going on%|,false,false,|%
+thisisit message,%|https://upload.wikimedia.org/wikipedia/en/4/43/Michael_Jackson's_This_Is_It_Poster.JPG%|,false,false,|%
+datboi message,%|✋🐸✋🐸✋🐸✋🐸 o shit waddup 👋 here 🚲 come dat bଠi🚲🚲 right🚲🚲th 🐸 ere✋✋✋ dat 🐸 boi ✔🐸 ✔if dat boi 🐸  ƽai so 💯 i sai so 💯 thats what im talking about right there 🚲 o shit (chorus: ଠ sʰᶦᵗ) mMMMMᎷМ💯 ✋✋O0ОଠＯOOＯOОଠଠOoooᵒᵒᵒᵒᵒᵒᵒᵒᵒ✋ ✋ ✋ ✋ 💯 🐸🐸🐸 👋👋 waddup%|,false,false,|%
+idiot message,%|you stupid idiot%|,true,false,|%
+obnd message,%|!youtube old boots new dirt%|,true,false,|%
+tts message,%|big american tts%|,true,false,|%
+philip message,%|not gunna lie%|,true,false,|%
+backyardigans voice,%|https://www.youtube.com/watch?v=vGxHEhIhm6A%|,website,false,|%
+dic voice,%|https://www.youtube.com/watch?v=UGvH7BH8tvs%|,website,false,|%
+DIC voice,%|https://www.youtube.com/watch?v=NHO84rOp8FQ%|,website,false,|%
+d message,%|!DIC%|,false,false,|%
+trapqueenopinion message,%|http://pitchfork.com/thepitch/911-fetty-wap-and-the-appropriation-of-everything-but-the-burden/%|,false,false,|%
+ak voice,%|https://www.youtube.com/watch?v=2lzXpOF5Ssg%|,website,false,|%
+heh message,%|don't make me come finger each and EVERY one of you, because i will%|,true,false,|%
+noot voice,%|https://www.youtube.com/watch?v=MFw3E6X5aoA%|,website,false,|%
+perfect voice,%|https://www.youtube.com/watch?v=a1sFPDXEYT4%|,website,false,|%
+killme voice,%|https://www.youtube.com/watch?v=kGdnSa4rgHw%|,website,false,|%
+jlt voice,%|https://www.youtube.com/watch?v=2L5lOh1CJIQ%|,website,false,|%
+hs1 voice,%|https://www.youtube.com/watch?v=DlFKgfP7Gn0%|,website,false,|%
+noises voice,%|https://www.youtube.com/watch?v=ad797LwGDyI%|,website,false,|%
+strings08 voice,%|https://www.youtube.com/watch?v=WX0x9hOjF0I%|,website,false,|%
+mad? voice,%|https://www.youtube.com/watch?v=urcqQC02YbY%|,website,false,|%
+AHHHH voice,%|https://www.youtube.com/watch?v=kSVV806O4UY%|,website,false,|%
+iaintsorry message,%|no no hell naw%|,false,false,|%
+spam voice,%|https://www.youtube.com/watch?v=fjpMSD3Yb1c%|,website,false,|%
+trapqueen voice,%|https://www.youtube.com/watch?v=a7d0vKo3kvs%|,website,false,|%
+bRAIN message,%|Rain, rain, go away. Evaporate and recondense combining with vapor molecules to return in a low-pressure front on a more appropriate occasion. Hey! Hey!%|,true,false,|%
+janet message,%|https://cdn.discordapp.com/attachments/184835842739666944/189023516606201857/IMG_0502.JPG%|,false,false,|%
+😠 message,%|https://cdn.discordapp.com/attachments/184835842739666944/189023516606201857/IMG_0502.JPG%|,false,false,|%
+impressed message,%|😮 ❗%|,false,false,|%
+depressed message,%|😔 🔫%|,false,false,|%
+southafrica message,%|seth efricaw%|,true,false,|%
+feelingit? message,%|Art thou feeling it now, Mister Krabs%|,true,false,|%
+UNACCEPTABLE voice,%|https://www.youtube.com/watch?v=07So_lJQyqw%|,website,false,|%
+TABOO voice,%|https://www.youtube.com/watch?v=xaCxTO3Z3vk%|,website,false,|%
+taboo message,%|https://en.wikipedia.org/wiki/Taboo_(rapper)%|,false,false,|%
+beaned message,%|Uh oh! You friccin moron. You just got **BEANED!!**%|,false,false,|%
+cammy voice,%|https://www.youtube.com/watch?v=2WGXCbfo3JY%|,website,false,|%
+neocammy voice,%|https://www.youtube.com/watch?v=LLZvv031dww%|,website,false,|%
+tip message,%|https://i.ytimg.com/vi/99UIR6iWKyU/maxresdefault.jpg%|,false,false,|%
+chill message,%|Can you guys shit the fuck up?%|,true,false,|%
+tip message,%|http://66.media.tumblr.com/5737e578664fa5c061ae7265ce28daab/tumblr_ntbehbZGUe1udsc8qo1_500.png%|,false,false,|%
+replay message,%|!y iyaz replay%|,false,false,|%
+CUTMYLIFE voice,%|last resort papa roach%|,website,false,|%
+hah voice,%|https://www.youtube.com/watch?v=3ec6jOMDCXI&app=desktop%|,website,false,|%
