@@ -47,4 +47,5 @@ async def on_ready():
 
 if __name__ == '__main__':
     bot.add_cog(tests.Games(bot))
-    bot.run(str(os.environ.get('DISCORD_TOKEN')))
+    print(str(os.environ['DISCORD_TOKEN']))
+    bot.run(str(os.environ['DISCORD_TOKEN']))
