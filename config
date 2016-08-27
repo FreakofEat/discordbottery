@@ -1,0 +1,5 @@
+[messages]
+# Trigger for option commands
+optionTrigger: ~
+# Trigger for regular commands
+commandTrigger: !
