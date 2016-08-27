@@ -1,7 +1,6 @@
 # import discord
 from discord.ext import commands
 import asyncio
-import random
 import configparser
 from cogs import general, games
 import os
