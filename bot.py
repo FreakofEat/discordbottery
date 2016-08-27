@@ -20,7 +20,6 @@ bot = commands.Bot(command_prefix=prefixes, description=description)
 @bot.command(name='hi', aliases=['hello', 'hey'], pass_context=True)
 async def greeting(ctx):
     """Greets the bot"""
-    print('ok')
     await bot.say('hello {0.name}'.format(ctx.message.author))
 
 
