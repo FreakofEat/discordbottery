@@ -69,5 +69,9 @@ async def bing_img_search(query, safe=True, offset=0):
         response.close()
     session.close()
 
-    image_url = results['d']['results'][0]['Image'][0]['MediaUrl']
+    image_url = results['d']['results'][0]['Image']
+    if len(image_url) > 0:
+        image_url = image_url[0]['MediaUrl']
+    else:
+        image_url = "No results"
     return image_url
