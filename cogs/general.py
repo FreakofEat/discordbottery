@@ -1,5 +1,4 @@
 from discord.ext import commands
-import json
 import aiohttp
 import os
 
@@ -24,17 +23,51 @@ class General:
                 'why dont you actually search for something ? Hm?')
             return
 
-        base_url = 'https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources=%27image%27'
-        search_q = '%27' + query[1].replace(' ', '+') + '%27'
-        url = base_url + '&Query=' + search_q + '&$top=1&$format=JSON'
+        num_test = query[1].rsplit(" ", 1)
+        try:
+            offset = int(num_test[1])-1
+            query[1] = num_test[0]
+        except:
+            offset = 0
 
-        session = aiohttp.ClientSession()
-        async with session.get(
-                url, auth=("", os.environ['BING_API_KEY'])) as response:
-            results = await response.json()
-            response.close()
-        session.close()
-
-        image_url = results['d']['results'][0]['Image'][0]['MediaUrl']
+        image_url = await bing_img_search(query[1], offset=offset)
         await self.bot.say(image_url)
 
+    @commands.command(name='imagea', aliases=['ia', 'imga'], pass_context=True)
+    async def _image_not_safe(self, ctx):
+        """image, no filter. discord keeps logs fyi
+        5000 searches a month so dkm (m=my search abilities)"""
+        query = ctx.message.content.split(" ", 1)
+        if len(query) == 1:
+            await self.bot.say(
+                'why dont you actually search for something ? Hm?')
+            return
+
+        num_test = query[1].rsplit(" ", 1)
+        try:
+            offset = int(num_test[1])-1
+            query[1] = num_test[0]
+        except:
+            offset = 0
+
+        image_url = await bing_img_search(query[1], safe=False, offset=offset)
+        await self.bot.say(image_url)
+
+
+async def bing_img_search(query, safe=True, offset=0):
+    base_url = 'https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources=%27image%27'
+    search_q = '%27' + query.replace(' ', '+') + '%27'
+    if not safe:
+        search_q += '&Adult=%27Off%27'
+    url = base_url + '&Query=' + search_q + \
+        '&$top=1&$format=JSON&$skip=' + str(offset)
+
+    session = aiohttp.ClientSession()
+    async with session.get(
+            url, auth=("", os.environ['BING_API_KEY'])) as response:
+        results = await response.json()
+        response.close()
+    session.close()
+
+    image_url = results['d']['results'][0]['Image'][0]['MediaUrl']
+    return image_url
