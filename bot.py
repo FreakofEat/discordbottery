@@ -10,6 +10,8 @@ config = configparser.ConfigParser()
 config.read('config')
 # bot_token = config['discord']['BotToken']
 command_trigger = config['messages']['commandTrigger']
+# discord_token = os.environ['DISCORD_TOKEN']
+# bing_key = os.environ['BING_API_KEY']
 
 # Bot vars
 prefixes = ['`', '?']
@@ -67,22 +69,6 @@ async def command_check(message):
         return
     else:
         arguments = []
-        '''        # cool programming ahead:
-        firstComma = command_details[0].index(",")
-        secondComma = command_details[0].index(",", firstComma + 1)
-        beginPhrase = command_details[0].index("%|")
-        endPhrase = command_details[0].index("%|", beginPhrase + 2)
-        thirdComma = command_details[0].index(",", endPhrase + 2)
-        fourthComma = command_details[0].index(",", thirdComma + 1)
-        try:
-            fifthComma = command_details[0].index(",", fourthComma + 1)
-        except ValueError:
-            fifthComma = len(command_details[0])
-        arguments.append(command_details[0][:firstComma])
-        arguments.append(command_details[0][beginPhrase + 2:endPhrase])
-        arguments.append(command_details[0][thirdComma + 1:fourthComma])
-        arguments.append(command_details[0][fourthComma + 1:fifthComma])
-        '''
         s1, s2 = command_details.split(',', 1)
         phrase = s2.split('%|', 2)
         remains = phrase[2].split(',')
