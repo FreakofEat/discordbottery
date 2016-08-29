@@ -4,6 +4,8 @@ import os
 
 class General:
     """general bot commands!!!!"""
+    # TODO: 'define' command
+    # TODO: 'translate' command
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot

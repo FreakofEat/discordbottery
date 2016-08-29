@@ -1,3 +1,5 @@
 cffi
 PyNaCl
 discord.py[voice]==0.11.0
+gmusicapi
+youtube-dl
