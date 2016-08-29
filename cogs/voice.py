@@ -434,7 +434,6 @@ class VoiceConnection:
             station_id = gpmapi.create_station('discord radio',
                                                artist_id=audio_id)
         else:
-            print("hits not found")
             return 'no results', None
         return title, station_id
 
@@ -500,6 +499,7 @@ class Voice:
 
     @commands.command(name='youtube', aliases=['y', 'Y'], pass_context=True)
     async def play_youtube(self, ctx):
+        """plays a given url (many sites work) or search query"""
         msg = ctx.message.content.split(" ", 1)
         if len(msg) == 1:
             return
@@ -523,6 +523,7 @@ class Voice:
 
     @commands.command(name='music', aliases=['m', 'M'], pass_context=True)
     async def play_music(self, ctx):
+        """plays a song off google play music"""
         msg = ctx.message.content.split(" ", 1)
         if len(msg) == 1:
             return
@@ -546,6 +547,9 @@ class Voice:
 
     @commands.command(name='radio', pass_context=True)
     async def play_music_radio(self, ctx):
+        """starts a radio based on a search query
+        songs are taken off google play
+        will only play after the immediate queue is clear"""
         msg = ctx.message.content.split(" ", 1)
         if len(msg) == 1:
             return
@@ -569,11 +573,13 @@ class Voice:
 
     @commands.command(aliases=['stop'], pass_context=True)
     async def skip(self, ctx):
+        """stops the current song and plays the next in queue"""
         if ctx.message.server.id in self.voice_connections:
             await self.voice_connections[ctx.message.server.id].stop()
 
     @commands.command(pass_context=True)
     async def leave(self, ctx):
+        """leaves the voice channel and clears all queues"""
         if ctx.message.server.id in self.voice_connections:
             await self.voice_connections[ctx.message.server.id].leave()
             if self.voice_connections[ctx.message.server.id].is_connected():
@@ -583,6 +589,7 @@ class Voice:
 
     @commands.command(name='queue', aliases=['q'], pass_context=True)
     async def get_queue(self, ctx):
+        """sends the current queue to the chat"""
         if ctx.message.server.id in self.voice_connections:
             queue_string = await self.voice_connections[
                 ctx.message.server.id].get_queue_string()
@@ -591,6 +598,7 @@ class Voice:
 
     @commands.command(name='stopradio', aliases=['sradio'], pass_context=True)
     async def stop_radio(self, ctx):
+        """stops the radio!!!"""
         if ctx.message.server.id in self.voice_connections:
             await self.voice_connections[ctx.message.server.id].stop_radio()
 
