@@ -491,6 +491,7 @@ class Voice:
 
     def __init__(self, bot: commands.Bot, v_c=None):
         self.bot = bot
+        # discord.opus.load_opus('libopus-0.x86.dll')
         if v_c is not None:
             self.voice_connections = v_c
         else:
