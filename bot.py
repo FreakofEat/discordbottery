@@ -2,7 +2,7 @@
 from discord.ext import commands
 import asyncio
 import configparser
-from cogs import general, games
+from cogs import general, games, voice
 import os
 
 
@@ -96,4 +96,5 @@ async def on_ready():
 if __name__ == '__main__':
     bot.add_cog(games.Games(bot))
     bot.add_cog(general.General(bot))
+    bot.add_cog(voice.Voice(bot))
     bot.run(str(os.environ['DISCORD_TOKEN']))
