@@ -527,7 +527,7 @@ class Voice:
         if len(msg) == 1:
             return
 
-        if self.voice_connections.get(ctx.message.server) is None:
+        if self.voice_connections.get(ctx.message.server.id) is None:
             voice_channel = None
             if ctx.message.author.voice.voice_channel is None:
                 for channel in ctx.message.server.channels:
@@ -550,7 +550,7 @@ class Voice:
         if len(msg) == 1:
             return
 
-        if self.voice_connections.get(ctx.message.server) is None:
+        if self.voice_connections.get(ctx.message.server.id) is None:
             voice_channel = None
             if ctx.message.author.voice.voice_channel is None:
                 for channel in ctx.message.server.channels:
