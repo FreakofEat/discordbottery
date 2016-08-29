@@ -104,14 +104,12 @@ class VoiceConnection:
         self.bot = bot
         self.voice_client = voice_client
         start_path = 'data/' + self.voice_client.server.name + \
-                     ' - ' + self.voice_client.server.id
-        if not os.path.exists(start_path):
-            os.mkdir(start_path)
-            os.mkdir(start_path + '/audio')
-            os.mkdir(start_path + '/audio/tempdownloads')
-        self.folder_path = start_path + '/audio/tempdownloads'
+                     ' - ' + self.voice_client.server.id + '/Voice'
+        self.folder_path = start_path + '/tempdownloads'
         if os.path.exists(self.folder_path):
             shutil.rmtree(self.folder_path, ignore_errors=True)
+        if not os.path.exists(start_path):
+            os.mkdir(start_path)
         os.mkdir(self.folder_path)
 
     async def add_to_playlist(self, arguments, message):
@@ -129,7 +127,7 @@ class VoiceConnection:
         for audio_item in audio_item_list:
             if audio_item is None:
                 await self.bot.send_message(message.channel,
-                                          "got nothing for you")
+                                            "got nothing for you")
             elif audio_type == 'gpm radio':
                 if len(self.playlist) == 0:
                     self.playlist.append(audio_item)

@@ -48,18 +48,20 @@ async def on_message(message):
     if message.content == '' or message.server is None:
         return
     elif message.content.startswith(command_trigger):
-        await command_check(message)
-    elif message.content == 'WITNESS ME':
+        await custom_command_check(message)
+    elif message.content.lower() == 'witness me':
         await bot.send_message(message.channel, "WITNESSED")
-    elif message.content == 'cut my life':
+    elif message.content.lower() == 'cut my life':
         await bot.send_message(message.channel, "INTO PIECES")
         await asyncio.sleep(3)
         await bot.send_message(message.channel, "THIS IS MY LAST RESORT")
+    elif message.content.lower() == 'damn':
+        await bot.send_message(message.channel, "daniel")
 
     await bot.process_commands(message)
 
 
-async def command_check(message):
+async def custom_command_check(message):
     # TODO: image search support
     # TODO: gambling & games
     query = message.content[1:].split()
@@ -85,12 +87,24 @@ async def command_check(message):
         # if arguments[0] == 'voice':
             # await voice_command(arguments, message)
 
+async def create_server_dirs():
+    for server in bot.servers:
+        if not os.path.exists('data/' + server.name + ' - ' + server.id):
+            os.mkdir('data/' + server.name + ' - ' + server.id)
+
+
+@bot.event
+async def on_server_join(server):
+    if not os.path.exists('data/' + server.name + ' - ' + server.id):
+        os.mkdir('data/' + server.name + ' - ' + server.id)
+
 
 @bot.event
 async def on_ready():
     print('logged in as: ' + bot.user.name)
     print('bot id: ' + bot.user.id)
     populate_from_files()
+    await create_server_dirs()
 
 
 if __name__ == '__main__':
