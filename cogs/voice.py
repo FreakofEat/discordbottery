@@ -291,7 +291,10 @@ class VoiceConnection:
                     items = []
                     for result in ydl_results['entries']:
                         url = result['url']
-                        title = result['title'] + ' - ' + result['uploader']
+                        if 'uploader' in result:
+                            title = result['title'] + ' - ' + result['uploader']
+                        else:
+                            title = result['title']
                         audio_id = result['id']
                         system_location = self.folder_path + '/' + audio_id + \
                             '.' + result['ext']
