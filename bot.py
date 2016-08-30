@@ -5,6 +5,8 @@ import configparser
 import random
 from cogs import general, games, voice
 import os
+import psycopg2
+import urllib.parse
 
 
 config = configparser.ConfigParser()
@@ -22,24 +24,18 @@ fun entertainment
 # help_attrs = dict()
 bot = commands.Bot(command_prefix=prefixes, description=description)
 
+# Postgres
+urllib.parse.uses_netloc.append("postgres")
+url = urllib.parse.urlparse(str(os.environ["DATABASE_URL"]))
+conn = psycopg2.connect(
+    database=url.path[1:],
+    user=url.username, password=url.password,
+    host=url.hostname, port=url.port
+)
+
 # General global vars
 c_commands = {}
-
-
-# gross stuff from before
-def populate_from_files():
-    with open('data/commandlist.txt', encoding='UTF-8') as f:
-        cur_line = ""
-        for line in f:
-            cur_line += line
-            # print(curStr)
-            if cur_line.endswith("|%\n"):
-                firstSpace = cur_line.index(" ")
-                word = cur_line[0:firstSpace]
-                stuff = cur_line[firstSpace + 1:]
-                c_commands[word] = stuff
-                cur_line = ""
-
+cur = conn.cursor()
 
 @bot.event
 async def on_message(message):
@@ -70,28 +66,19 @@ async def on_message(message):
 async def custom_command_check(message):
     # TODO: image search support
     # TODO: gambling & games
-    query = message.content[1:].split()
-    command_details = c_commands.get(query[0])
-
-    if command_details is None:
+    query = message.content[1:]
+    cur.execute("SELECT * FROM message_commands WHERE invoke = (%s)", [query])
+    # command_details = c_commands.get(query[0])
+    try:
+        invoke, to_send, is_tts, idk = cur.fetchone()
+    except TypeError:
         return
-    else:
-        arguments = []
-        s1, s2 = command_details.split(',', 1)
-        phrase = s2.split('%|', 2)
-        remains = phrase[2].split(',')
-        arguments.extend([s1, phrase[1]])
-        arguments.extend(remains[1:])
 
-        if arguments[0] == 'message':
-            await bot.send_typing(message.channel)
-            """ add custom message commands here """
-            if arguments[2] == "true":
-                await bot.send_message(message.channel, arguments[1], tts=True)
-            else:
-                await bot.send_message(message.channel, arguments[1])
-        # if arguments[0] == 'voice':
-            # await voice_command(arguments, message)
+    await bot.send_typing(message.channel)
+    """ add custom message commands here """
+    await bot.send_message(message.channel, to_send, tts=is_tts)
+    # if arguments[0] == 'voice':
+    #     await voice_command(arguments, message)
 
 async def create_server_dirs():
     for server in bot.servers:
@@ -109,7 +96,6 @@ async def on_server_join(server):
 async def on_ready():
     print('logged in as: ' + bot.user.name)
     print('bot id: ' + bot.user.id)
-    populate_from_files()
     await create_server_dirs()
 
 
