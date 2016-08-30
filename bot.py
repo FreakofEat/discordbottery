@@ -2,6 +2,7 @@
 from discord.ext import commands
 import asyncio
 import configparser
+import random
 from cogs import general, games, voice
 import os
 
@@ -57,6 +58,11 @@ async def on_message(message):
         await bot.send_message(message.channel, "THIS IS MY LAST RESORT")
     elif message.content.lower() == 'damn':
         await bot.send_message(message.channel, "daniel")
+    elif message.content.lower().find('vmboys') != -1:
+        if random.randint(0, 1) == 0:
+            await bot.send_message(message.channel, "_WHEEZE_")
+        else:
+            await bot.send_message(message.channel, "haha, nice")
 
     await bot.process_commands(message)
 
@@ -108,7 +114,7 @@ async def on_ready():
 
 
 if __name__ == '__main__':
-    bot.add_cog(games.Games(bot))
     bot.add_cog(general.General(bot))
     bot.add_cog(voice.Voice(bot))
+    bot.add_cog(games.Games(bot))
     bot.run(str(os.environ['DISCORD_TOKEN']))

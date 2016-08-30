@@ -1,12 +1,14 @@
 from discord.ext import commands
 import random
+import psycopg2
+import urllib.parse
 
 class Games:
     """bot games"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.leaderboards = None
+        # self.database = urllib.parse.
 
     @commands.command()
     async def play(self):
