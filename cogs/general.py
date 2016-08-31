@@ -10,6 +10,7 @@ import threading
 
 # global vars
 js_driver = None
+session = aiohttp.ClientSession()
 
 class General:
     """general bot commands!!!!"""
@@ -48,7 +49,7 @@ class General:
 
     @commands.command(name='imagea', aliases=['ia', 'imga'], pass_context=True)
     async def _image_not_safe(self, ctx):
-        """image, no filter. discord keeps logs fyi
+        """image, #nofilter. discord keeps logs fyi
         5000 searches a month so dkm (m=my search abilities)"""
         query = ctx.message.content.split(" ", 1)
         if len(query) == 1:
@@ -76,17 +77,15 @@ class General:
         if search != "":
             search_urlsafe = urllib.parse.quote_plus(search)
             url = 'http://copypasterino.me/search/' + search_urlsafe
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as r:
-                    json = await r.json()
-                    pasta = json[random.randrange(0, len(json))]['pasta']
+            async with session.get(url) as r:
+                json = await r.json()
+                pasta = json[random.randrange(0, len(json))]['pasta']
         else:
             url = 'http://copypasterino.me/static/all/hot/' + \
                   str(random.randint(1, 7))
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as r:
-                    json = await r.json()
-                    pasta = json[random.randrange(0, len(json))]['pasta']
+            async with session.get(url) as r:
+                json = await r.json()
+                pasta = json[random.randrange(0, len(json))]['pasta']
         """
         url = 'http://copypasterino.me/general/hot/' + str(random.randint(1, 7))
         # print(url)
@@ -111,6 +110,28 @@ class General:
                 await self.bot.say(pasta)
                 # print('done')
                 return
+
+    @commands.command(pass_context=True)
+    async def grammar(self, ctx):
+        query = ctx.message.content.split(" ", 1)[1]
+        if len(query) == 0:
+            return
+        output = await after_the_deadline(query)
+        if output == "":
+            await self.bot.say('no problems found!')
+        else:
+            await self.bot.say(output)
+
+    @commands.command(pass_context=True)
+    async def spelling(self, ctx):
+        query = ctx.message.content.split(" ", 1)[1]
+        if len(query) == 0:
+            return
+        output = await after_the_deadline(query, type=1)
+        if output == "":
+            await self.bot.say('no problems found!')
+        else:
+            await self.bot.say(output)
 
 
 class _GetHtmlJs(threading.Thread):
@@ -153,7 +174,6 @@ async def get_html_js(url):
         # print('timecount++')
     return html_thread.html
 
-
 async def bing_img_search(query, safe=True, offset=0):
     base_url = 'https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources=%27image%27'
     search_q = '%27' + query.replace(' ', '+') + '%27'
@@ -162,12 +182,10 @@ async def bing_img_search(query, safe=True, offset=0):
     url = base_url + '&Query=' + search_q + \
         '&$top=1&$format=JSON&$skip=' + str(offset)
 
-    session = aiohttp.ClientSession()
     async with session.get(
             url, auth=("", os.environ['BING_API_KEY'])) as response:
         results = await response.json()
         response.close()
-    session.close()
 
     image_url = results['d']['results'][0]['Image']
     if len(image_url) > 0:
@@ -175,3 +193,28 @@ async def bing_img_search(query, safe=True, offset=0):
     else:
         image_url = "No results"
     return image_url
+
+async def after_the_deadline(query, type=0):
+    # type=0: grammar only
+    # type=1: spelling too!!
+    api_key = random.getrandbits(32)
+    data = {'key': str(api_key), 'data': query}
+    if type == 0:
+        url = 'http://service.afterthedeadline.com/checkGrammar'
+    else:
+        url = 'http://service.afterthedeadline.com/checkDocument'
+    async with session.post(url, data=data) as r:
+        response = await r.text()
+    soup = BeautifulSoup(response, 'html.parser')
+    output = ""
+    for error in soup.find_all('error'):
+        output += 'Found: "' + error.find('string').text + '". '
+        suggestions = ""
+        suggests = error.find_all('option')
+        for suggest in error.find_all('option'):
+            suggestions += "/" + suggest.text
+        if suggestions == "":
+            suggestions = " No suggestions"
+        output += error.find('description').text + \
+            ": " + suggestions[1:] + "\n"
+    return output
