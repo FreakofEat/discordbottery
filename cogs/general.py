@@ -2,6 +2,7 @@ from discord.ext import commands
 import aiohttp
 import os
 import random
+import selenium
 from bs4 import BeautifulSoup
 
 class General:
@@ -57,7 +58,7 @@ class General:
         image_url = await bing_img_search(query[1], safe=False, offset=offset)
         await self.bot.say(image_url)
 
-    # TODO: finish copypasta
+    # TODO: finish
     '''
     @commands.command()
     async def copypasta(self):
