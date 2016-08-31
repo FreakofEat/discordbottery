@@ -1,9 +1,14 @@
 from discord.ext import commands
 import aiohttp
 import os
+import asyncio
 import random
-import selenium
+from selenium import webdriver
 from bs4 import BeautifulSoup
+import threading
+
+# global vars
+js_driver = None
 
 class General:
     """general bot commands!!!!"""
@@ -58,19 +63,72 @@ class General:
         image_url = await bing_img_search(query[1], safe=False, offset=offset)
         await self.bot.say(image_url)
 
-    # TODO: finish
-    '''
     @commands.command()
     async def copypasta(self):
         """ Pastes a random copypasta """
-        html = ""
         url = 'http://copypasterino.me/general/hot/' + str(random.randint(1, 7))
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as r:
-                html = await r.read()
+        print(url)
+        html = await get_html_js(url)
+        if html is None:
+            return
         soup = BeautifulSoup(html, 'html.parser')
-    '''
+        pastas = soup.find_all(class_='well col-md-6 col-sm-8 col-xs-10')
+        rand_p = random.randrange(0, len(pastas))
+        p_soup = BeautifulSoup(str(pastas[rand_p]), 'html.parser')
+        text = p_soup.get_text()
+        pasta = text.split("Tags: #", 1)[0]
+        # print('full pasta = ' + pasta)
+        while len(pasta) > 0:
+            if len(pasta) >= 2000:
+                part = pasta[0:1999]
+                await self.bot.say(part)
+                pasta = pasta[1999:]
+                # print('pasta = ' + pasta)
+            else:
+                await self.bot.say(pasta)
+                # print('done')
+                return
 
+
+class _GetHtmlJs(threading.Thread):
+    def __init__(self, driver, url):
+        threading.Thread.__init__(self)
+        self.driver = driver
+        self.url = url
+        self.html = ""
+
+    def run(self):
+        self.driver.get(self.url)
+        print('gotten')
+        self.html = self.driver.page_source
+
+async def get_html_js(url):
+    print('start')
+    global js_driver
+    if js_driver is None:
+        js_driver = "starting"
+        try:
+            js_driver = webdriver.PhantomJS(str(os.environ['PHANTOM_JS']))
+        except:
+            js_driver = None
+        print('driver')
+    while js_driver == "starting":
+        print('waiting js_driver')
+        await asyncio.sleep(5)
+    if js_driver is None:
+        return
+    html_thread = _GetHtmlJs(js_driver, url)
+    html_thread.start()
+    time_count = 0
+    while html_thread.is_alive():
+        if time_count > 10:
+            print('timecount done')
+            return None
+        await asyncio.sleep(1)
+        html_thread.join(0.1)
+        time_count += 1
+        print('timecount++')
+    return html_thread.html
 
 
 async def bing_img_search(query, safe=True, offset=0):
