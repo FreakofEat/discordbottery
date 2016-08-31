@@ -122,6 +122,7 @@ if __name__ == '__main__':
         os.mkdir('data')
     bot.add_cog(general.General(bot))
     bot.add_cog(voice.Voice(bot))
-    bot.add.cog(queries.Queries(bot))
+    bot.add_cog(queries.Queries(bot))
     bot.add_cog(games.Games(bot, conn))
     bot.run(str(os.environ['DISCORD_TOKEN']))
+    queries.close_aiohttp()
