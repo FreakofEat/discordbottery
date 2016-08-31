@@ -64,8 +64,6 @@ async def on_message(message):
 
 
 async def custom_command_check(message):
-    # TODO: image search support
-    # TODO: gambling & games
     query = message.content[1:]
     cur = conn.cursor()
     cur.execute("SELECT * FROM message_commands WHERE invoke = (%s)", [query])
