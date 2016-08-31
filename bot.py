@@ -118,6 +118,8 @@ async def on_ready():
 
 
 if __name__ == '__main__':
+    if not os.path.exists('data'):
+        os.mkdir('data')
     bot.add_cog(general.General(bot))
     bot.add_cog(voice.Voice(bot))
     bot.add_cog(games.Games(bot, conn))
