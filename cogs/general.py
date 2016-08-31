@@ -1,6 +1,8 @@
 from discord.ext import commands
 import aiohttp
 import os
+import random
+from bs4 import BeautifulSoup
 
 class General:
     """general bot commands!!!!"""
@@ -54,6 +56,20 @@ class General:
 
         image_url = await bing_img_search(query[1], safe=False, offset=offset)
         await self.bot.say(image_url)
+
+    # TODO: finish copypasta
+    '''
+    @commands.command()
+    async def copypasta(self):
+        """ Pastes a random copypasta """
+        html = ""
+        url = 'http://copypasterino.me/general/hot/' + str(random.randint(1, 7))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as r:
+                html = await r.read()
+        soup = BeautifulSoup(html, 'html.parser')
+    '''
+
 
 
 async def bing_img_search(query, safe=True, offset=0):

@@ -35,7 +35,7 @@ conn = psycopg2.connect(
 
 # General global vars
 c_commands = {}
-cur = conn.cursor()
+
 
 @bot.event
 async def on_message(message):
@@ -67,12 +67,14 @@ async def custom_command_check(message):
     # TODO: image search support
     # TODO: gambling & games
     query = message.content[1:]
+    cur = conn.cursor()
     cur.execute("SELECT * FROM message_commands WHERE invoke = (%s)", [query])
     # command_details = c_commands.get(query[0])
     try:
         invoke, to_send, is_tts, idk = cur.fetchone()
     except TypeError:
         return
+    cur.close()
 
     await bot.send_typing(message.channel)
     """ add custom message commands here """
@@ -84,6 +86,23 @@ async def create_server_dirs():
     for server in bot.servers:
         if not os.path.exists('data/' + server.name + ' - ' + server.id):
             os.mkdir('data/' + server.name + ' - ' + server.id)
+
+async def add_to_bank(user_id):
+    cur = conn.cursor()
+    cur.execute("INSERT INTO bank (user_id, currency) VALUES (%s, 120) ON CONFLICT DO NOTHING", [user_id])
+    conn.commit()
+    cur.close()
+
+async def bank_setup():
+    cur = conn.cursor()
+    for server in bot.servers:
+        for user in server.members:
+            cur.execute("SELECT * FROM bank WHERE user_id = (%s)", [user.id])
+            if cur.fetchone() is None:
+                print(user.id)
+                await add_to_bank(user.id)
+    print('bank setup')
+    cur.close()
 
 
 @bot.event
@@ -97,10 +116,11 @@ async def on_ready():
     print('logged in as: ' + bot.user.name)
     print('bot id: ' + bot.user.id)
     await create_server_dirs()
+    # await bank_setup()
 
 
 if __name__ == '__main__':
     bot.add_cog(general.General(bot))
     bot.add_cog(voice.Voice(bot))
-    bot.add_cog(games.Games(bot))
+    bot.add_cog(games.Games(bot, conn))
     bot.run(str(os.environ['DISCORD_TOKEN']))
