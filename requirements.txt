@@ -4,3 +4,4 @@ discord.py[voice]==0.11.0
 gmusicapi
 youtube-dl
 psycopg2
+selenium
