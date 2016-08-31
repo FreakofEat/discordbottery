@@ -3,6 +3,7 @@ import aiohttp
 import os
 import asyncio
 import random
+import urllib.parse
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import threading
@@ -14,6 +15,7 @@ class General:
     """general bot commands!!!!"""
     # TODO: 'define' command
     # TODO: 'translate' command
+    # TODO: 'grammar' command (after the deadline api)
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -40,7 +42,8 @@ class General:
         except:
             offset = 0
 
-        image_url = await bing_img_search(query[1], offset=offset)
+        search_urlsafe = urllib.parse.quote_plus(query[1])
+        image_url = await bing_img_search(search_urlsafe, offset=offset)
         await self.bot.say(image_url)
 
     @commands.command(name='imagea', aliases=['ia', 'imga'], pass_context=True)
@@ -60,12 +63,31 @@ class General:
         except:
             offset = 0
 
-        image_url = await bing_img_search(query[1], safe=False, offset=offset)
+        search_urlsafe = urllib.parse.quote_plus(query[1])
+        image_url = await bing_img_search(search_urlsafe,
+                                          safe=False, offset=offset)
         await self.bot.say(image_url)
 
     @commands.command()
-    async def copypasta(self):
-        """ Pastes a random copypasta """
+    async def copypasta(self, search=""):
+        """Pastes a random copypasta (copypasterino.me)
+        add a query after to search"""
+        pasta = ""
+        if search != "":
+            search_urlsafe = urllib.parse.quote_plus(search)
+            url = 'http://copypasterino.me/search/' + search_urlsafe
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as r:
+                    json = await r.json()
+                    pasta = json[random.randrange(0, len(json))]['pasta']
+        else:
+            url = 'http://copypasterino.me/static/all/hot/' + \
+                  str(random.randint(1, 7))
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as r:
+                    json = await r.json()
+                    pasta = json[random.randrange(0, len(json))]['pasta']
+        """
         url = 'http://copypasterino.me/general/hot/' + str(random.randint(1, 7))
         # print(url)
         html = await get_html_js(url)
@@ -78,6 +100,7 @@ class General:
         text = p_soup.get_text()
         pasta = text.split("Tags: #", 1)[0]
         # print('full pasta = ' + pasta)
+        """
         while len(pasta) > 0:
             if len(pasta) >= 2000:
                 part = pasta[0:1999]
