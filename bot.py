@@ -3,7 +3,7 @@ from discord.ext import commands
 import asyncio
 import configparser
 import random
-from cogs import general, games, voice
+from cogs import general, games, voice, queries
 import os
 import psycopg2
 import urllib.parse
@@ -122,5 +122,6 @@ if __name__ == '__main__':
         os.mkdir('data')
     bot.add_cog(general.General(bot))
     bot.add_cog(voice.Voice(bot))
+    bot.add.cog(queries.Queries(bot))
     bot.add_cog(games.Games(bot, conn))
     bot.run(str(os.environ['DISCORD_TOKEN']))
