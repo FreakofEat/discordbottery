@@ -67,7 +67,7 @@ class General:
     async def copypasta(self):
         """ Pastes a random copypasta """
         url = 'http://copypasterino.me/general/hot/' + str(random.randint(1, 7))
-        print(url)
+        # print(url)
         html = await get_html_js(url)
         if html is None:
             return
@@ -99,7 +99,7 @@ class _GetHtmlJs(threading.Thread):
 
     def run(self):
         self.driver.get(self.url)
-        print('gotten')
+        # print('gotten')
         self.html = self.driver.page_source
 
 async def get_html_js(url):
@@ -113,7 +113,7 @@ async def get_html_js(url):
             js_driver = None
         print('driver')
     while js_driver == "starting":
-        print('waiting js_driver')
+        # print('waiting js_driver')
         await asyncio.sleep(5)
     if js_driver is None:
         return
@@ -127,7 +127,7 @@ async def get_html_js(url):
         await asyncio.sleep(1)
         html_thread.join(0.1)
         time_count += 1
-        print('timecount++')
+        # print('timecount++')
     return html_thread.html
 
 
