@@ -3,6 +3,8 @@ import random
 import psycopg2
 import urllib.parse
 
+
+# TODO: gambling & games
 class Games:
     """bot games (NOT WORKING YET)
     (B) = Can bet on
