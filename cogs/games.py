@@ -8,8 +8,8 @@ import urllib.parse
 class Games:
     """bot games (NOT WORKING YET)
     (B) = Can bet on
-    Bet by starting your command with the bet command
-    (e.g '`bet 4 flip h' to bet 4 currency that you'll get heads)"""
+    Bet by adding '$(number)' to the end of a game
+    (e.g '`flip h $3' to bet 3 currency that you'll get heads)"""
 
     def __init__(self, bot: commands.Bot, conn):
         self.bot = bot
@@ -20,10 +20,16 @@ class Games:
     async def play(self):
         await self.bot.say('i dont know how to')
 
-    @commands.command()
-    async def roll(self, dice: str = '1d6'):
+    @commands.command(pass_context=True)
+    async def roll(self, ctx):
         """Rolls a dice in NdN format.
         (fully copied from the samples hahahahahah)"""
+        # TODO: fix this
+        split = ctx.message.content.split()
+        if len(split) == 1:
+            dice = '1d6'
+        else:
+            dice = split[1]
         try:
             rolls, limit = map(int, dice.split('d'))
         except Exception:
@@ -32,6 +38,19 @@ class Games:
 
         result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
         await self.bot.say(result)
+
+    @commands.command(pass_context=True)
+    async def flip(self, ctx):
+        print('ok')
+
+    @commands.command(pass_context=True)
+    async def bank(self, ctx):
+        cur = self.conn.cursor()
+        cur.execute("SELECT currency FROM bank WHERE user_id = (%s)",
+                    [ctx.message.author.id])
+        currency = str(cur.fetchone())
+        self.bot.say(currency)
+        cur.close()
 
     # TODO: Finish bet command
     '''
@@ -45,3 +64,8 @@ class Games:
         except:
             await self.bot.say('what are you saying')
     '''
+
+
+def bet_check(message):
+    print('ok')
+    return True

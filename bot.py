@@ -13,16 +13,17 @@ config = configparser.ConfigParser()
 config.read('config')
 # bot_token = config['discord']['BotToken']
 command_trigger = config['messages']['commandTrigger']
+custom_trigger = config['messages']['customTrigger']
 # discord_token = os.environ['DISCORD_TOKEN']
 # bing_key = os.environ['BING_API_KEY']
 
 # Bot vars
-prefixes = ['`', '?']
+c_prefixes = ['`']
 description = '''
 fun entertainment
 '''
 # help_attrs = dict()
-bot = commands.Bot(command_prefix=prefixes, description=description)
+bot = commands.Bot(command_prefix=c_prefixes, description=description)
 
 # Postgres
 urllib.parse.uses_netloc.append("postgres")
@@ -44,7 +45,7 @@ async def on_message(message):
     #     return
     if message.content == '' or message.server is None:
         return
-    elif message.content.startswith(command_trigger):
+    elif message.content.startswith(custom_trigger):
         await custom_command_check(message)
     elif message.content.lower() == 'witness me':
         await bot.send_message(message.channel, "WITNESSED")
