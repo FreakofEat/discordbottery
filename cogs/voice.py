@@ -279,7 +279,8 @@ class VoiceConnection:
                     'fixup': "warn"}) as ydl:
                 try:
                     ydl_results = ydl.extract_info(query, download=False)
-                except:
+                except Exception as e:
+                    print(str(e))
                     await self.bot.send_message(
                         message.channel,
                         'some error (video not found most likely)')
@@ -324,7 +325,7 @@ class VoiceConnection:
                                                           num_tracks=125)
                     gpmapi.delete_stations([station_id])
                 else:
-                    song_list = gpmapi.get_station_tracks('IFL', num_tracks=125)
+                    song_list = gpmapi.get_station_tracks('IFL', num_tracks=50)
                     radio_msg_content = 'starting random radio'
                     radio_msg = await self.bot.send_message(message.channel,
                                                           radio_msg_content)
@@ -552,8 +553,6 @@ class Voice:
         songs are taken off google play
         will only play after the immediate queue is clear"""
         msg = ctx.message.content.split(" ", 1)
-        if len(msg) == 1:
-            return
 
         if self.voice_connections.get(ctx.message.server.id) is None:
             voice_channel = None

@@ -1,5 +1,5 @@
 [messages]
-# Trigger for option commands
-optionTrigger: ~
 # Trigger for regular commands
-commandTrigger: !
+commandTrigger: `
+# Trigger for custom commands
+customTrigger: !

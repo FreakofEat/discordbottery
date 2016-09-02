@@ -73,13 +73,13 @@ class Queries:
             search_urlsafe = urllib.parse.quote_plus(search)
             url = 'http://copypasterino.me/search/' + search_urlsafe
             async with session.get(url) as r:
-                json = await r.json()
+                json = await r.json(encoding='utf-8')
                 pasta = json[random.randrange(0, len(json))]['pasta']
         else:
             url = 'http://copypasterino.me/static/all/hot/' + \
                   str(random.randint(1, 7))
             async with session.get(url) as r:
-                json = await r.json()
+                json = await r.json(encoding='utf-8')
                 pasta = json[random.randrange(0, len(json))]['pasta']
         """
         url = 'http://copypasterino.me/general/hot/' + str(random.randint(1, 7))
@@ -135,6 +135,14 @@ class Queries:
             await self.bot.say('no problems found!')
         else:
             await self.bot.say(output)
+
+    @commands.command()
+    async def define(self, word: str="define", *args):
+        url = 'http://api.pearson.com/v2/dictionaries/laad3/entries?search=' + word
+        async with session.get(url) as r:
+            response = await r.json(encoding='utf-8')
+        print('test')
+        #output = ""
 
 
 class _GetHtmlJs(threading.Thread):
@@ -210,16 +218,20 @@ async def after_the_deadline(query, type=0):
         response = await r.text()
     soup = BeautifulSoup(response, 'html.parser')
     output = ""
+    found_errors = []
     for error in soup.find_all('error'):
-        output += 'Found: "' + error.find('string').text + '". '
-        suggestions = ""
-        suggests = error.find_all('option')
-        for suggest in error.find_all('option'):
-            suggestions += "/" + suggest.text
-        if suggestions == "":
-            suggestions = " No suggestions"
-        output += error.find('description').text + \
-            ": " + suggestions[1:] + "\n"
+        error_text = error.find('string')
+        if error_text not in found_errors:
+            output += 'Found: "' + error.find('string').text + '". '
+            found_errors.append(error_text)
+            suggestions = ""
+            suggests = error.find_all('option')
+            for suggest in error.find_all('option'):
+                suggestions += "/" + suggest.text
+            if suggestions == "":
+                suggestions = " No suggestions"
+            output += error.find('description').text + \
+                ": " + suggestions[1:] + "\n"
     return output
 
 
