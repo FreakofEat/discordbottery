@@ -7,6 +7,7 @@ from cogs import general, games, voice, queries
 import os
 import psycopg2
 import urllib.parse
+import time
 
 
 config = configparser.ConfigParser()
@@ -103,6 +104,14 @@ async def bank_setup():
     print('bank setup')
     cur.close()
 
+async def zooboys():
+    await bot.wait_until_ready()
+    while not bot.is_closed:
+        cur_time = time.localtime()
+        if cur_time.tm_hour == 17 and cur_time.tm_min == 48:
+            await bot.send_message(bot.get_channel('144849743368028160'),
+                                   '17:48')
+        await asyncio.sleep(60)
 
 @bot.event
 async def on_server_join(server):
@@ -125,5 +134,6 @@ if __name__ == '__main__':
     bot.add_cog(voice.Voice(bot))
     bot.add_cog(queries.Queries(bot))
     bot.add_cog(games.Games(bot, conn))
+    bot.loop.create_task(zooboys())
     bot.run(str(os.environ['DISCORD_TOKEN']))
     queries.close_aiohttp()
