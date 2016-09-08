@@ -283,7 +283,7 @@ class VoiceConnection:
                     print(str(e))
                     await self.bot.send_message(
                         message.channel,
-                        'some error (video not found most likely)')
+                        "some error, video not found or it's blocked in the US :(")
                     return
                 if 'entries' in ydl_results:
                     await self.bot.send_message(
