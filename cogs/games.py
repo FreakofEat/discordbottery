@@ -53,17 +53,19 @@ class Games:
         cur.close()
 
     # TODO: Finish bet command
-    '''
+
     @commands.command(pass_context=True)
     async def bet(self, ctx):
         """This doesnt work yet so dont even try"""
         try:
             invoke, curr, command = ctx.message.split(" ", 2)
             self.bot.get_command(command)
-            self.bot.process_commands
+            #self.bot.process_commands
         except:
             await self.bot.say('what are you saying')
-    '''
+        finally:
+            return
+
 
 
 def bet_check(message):
