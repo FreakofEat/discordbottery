@@ -1,5 +1,7 @@
 venv
 .idea
+.vscode
 .env
 data
+*.pyc
 /ghostdriver.log
