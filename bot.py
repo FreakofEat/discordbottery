@@ -56,6 +56,8 @@ async def on_message(message):
         await bot.send_message(message.channel, "THIS IS MY LAST RESORT")
     elif message.content.lower() == 'damn':
         await bot.send_message(message.channel, "daniel")
+    elif message.content.lower() in ('huda', 'hudda'): #TBH Not sure how it's spelled
+        await bot.send_message(message.channel, "heck")
     elif message.content.lower().find('vmboys') != -1:
         if random.randint(0, 1) == 0:
             await bot.send_message(message.channel, "_WHEEZE_")
