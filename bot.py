@@ -112,7 +112,7 @@ async def zooboys():
         cur_time = time.localtime()
         if cur_time.tm_hour == 17 and cur_time.tm_min == 48:
             await bot.send_message(bot.get_channel('144849743368028160'),
-                                   '17:48')
+                                   '11:11 make a wish')
         await asyncio.sleep(60)
 
 @bot.event
