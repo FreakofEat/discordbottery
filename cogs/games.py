@@ -39,6 +39,7 @@ class Games:
         result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
         await self.bot.say(result)
 
+    '''
     @commands.command(pass_context=True)
     async def flip(self, ctx):
         print('ok')
@@ -49,7 +50,7 @@ class Games:
         cur.execute("SELECT currency FROM bank WHERE user_id = (%s)",
                     [ctx.message.author.id])
         currency = str(cur.fetchone())
-        self.bot.say(currency)
+        await self.bot.say(currency)
         cur.close()
 
     # TODO: Finish bet command
@@ -65,7 +66,7 @@ class Games:
             await self.bot.say('what are you saying')
         finally:
             return
-
+    '''
 
 
 def bet_check(message):
