@@ -3,7 +3,7 @@ from discord.ext import commands
 import asyncio
 import configparser
 import random
-from cogs import general, games, voice, queries
+from cogs import general, games, voice, queries, twitter
 import os
 import psycopg2
 import urllib.parse
@@ -132,10 +132,16 @@ async def on_ready():
 if __name__ == '__main__':
     if not os.path.exists('data'):
         os.mkdir('data')
+
     bot.add_cog(general.General(bot))
     bot.add_cog(voice.Voice(bot))
     bot.add_cog(queries.Queries(bot))
     bot.add_cog(games.Games(bot, conn))
+    bot.add_cog(twitter.Twitter(bot))
+
     bot.loop.create_task(zooboys())
     bot.run(str(os.environ['DISCORD_TOKEN']))
+
     queries.close_aiohttp()
+    twitter.close_aiohttp()
+
