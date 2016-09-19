@@ -61,3 +61,8 @@ class General:
         cur.close()
         await self.bot.say(message_cmds)
         await self.bot.say(tts_cmds)
+
+    @commands.command()
+    async def me(self):
+        """look at me"""
+        await self.bot.say('https://github.com/FreakofEat/discordbottery')
