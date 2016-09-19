@@ -114,6 +114,8 @@ class VoiceConnection:
 
     async def add_to_playlist(self, arguments, message):
         # TODO: youtube playlist support
+        if self.cur_player is not None and not self.cur_player.is_playing():
+            self.cur_player.resume()
         query = message.content.split(" ", 1)
         if len(query) > 1:
             query = query[1]
@@ -389,7 +391,12 @@ class VoiceConnection:
             print(repr(e))
 
     async def pause(self):
-        print('ok')
+        if self.cur_player is not None and self.cur_player.is_playing():
+            self.cur_player.pause()
+
+    async def resume(self):
+        if self.cur_player is not None and not self.cur_player.is_playing():
+            self.cur_player.resume()
 
     async def stop_radio(self):
         self.radio_queue = deque()
@@ -586,6 +593,18 @@ class Voice:
                 await self.voice_connections[
                     ctx.message.server.id].voice_client.disconnect()
             del self.voice_connections[ctx.message.server.id]
+
+    @commands.command(pass_context=True)
+    async def pause(self, ctx):
+        """pauses the current queue"""
+        if ctx.message.server.id in self.voice_connections:
+            await self.voice_connections[ctx.message.server.id].pause()
+
+    @commands.command(pass_context=True)
+    async def resume(self, ctx):
+        """resumes the paused queue"""
+        if ctx.message.server.id in self.voice_connections:
+            await self.voice_connections[ctx.message.server.id].resume()
 
     @commands.command(name='queue', aliases=['q'], pass_context=True)
     async def get_queue(self, ctx):
