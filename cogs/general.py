@@ -1,7 +1,11 @@
 from discord.ext import commands
+import discord.channel
 import psycopg2
+import random
 import urllib.parse
 import os
+import asyncio
+import base64
 
 
 class General:
@@ -16,6 +20,7 @@ class General:
             user=url.username, password=url.password,
             host=url.hostname, port=url.port
         )
+        self.spoilers = dict()
 
     @commands.command(name='hi', aliases=['hello', 'hey'], pass_context=True)
     async def greeting(self, ctx):
@@ -66,3 +71,30 @@ class General:
     async def me(self):
         """look at me"""
         await self.bot.say('https://github.com/FreakofEat/discordbottery')
+
+    @commands.command(pass_context=True)
+    async def spoiler(self, ctx, *, message: str):
+        """hides a spoiler message
+        `spoiler [topic:] (spoiler message)
+        the bot needs a role with 'manage messages' for speedy spoiler removal!!!
+        if your spoiler has a ':' in it, make sure you add a topic or else you'll be sorry"""
+        await self.bot.delete_message(ctx.message)
+        if message.find(':') == -1:
+            spoiler_topic = 'general'
+        else:
+            split = message.split(':')
+            spoiler_topic = split[0]
+            message = split[1]
+        msgenc = base64.b64encode(message.encode())
+        await self.bot.say(spoiler_topic + ' spoiler: ' + msgenc.decode())
+
+    @commands.command(pass_context=True)
+    async def reveal(self, ctx, code: str):
+        """reveals a spoiler message from a given code
+        only works in a one on one chat"""
+        if type(ctx.message.channel) == discord.PrivateChannel:
+            print('ok')
+            msg = base64.b64decode(code.encode()).decode()
+            await self.bot.say(msg)
+        else:
+            await self.bot.say('some privacy PLEASE')

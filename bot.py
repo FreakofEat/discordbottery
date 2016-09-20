@@ -44,7 +44,7 @@ async def on_message(message):
     # handles custom commands first
     if message.author.id == bot.user.id:
         return
-    if message.content == '' or message.server is None:
+    if message.content == '':
         return
     elif message.content.startswith(custom_trigger):
         await custom_command_check(message)
