@@ -23,10 +23,10 @@ class Twitter:
 
     @commands.command()
     async def tweet(self, *, message: str=""):
-        """tweet a message and more...
+        """tweet a message and more... (`help twitter for more...)
         d [username] [message] to dm
         @[username] [message] to sneak into mentions
-        https://support.twitter.com/articles/14020 for even more"""
+        https://support.twitter.com/articles/14020 for more..."""
         if message == "":
             return
         elif len(message) > 140:
@@ -44,7 +44,7 @@ class Twitter:
             if r.status != 200:
                 await self.bot.say(json['errors'][0]['message'])
                 return
-            await self.bot.say('https://twitter.com/botterypottery/status/' + \
+            await self.bot.say('https://twitter.com/botterypottery/status/' +
                                json['id_str'])
 
     @commands.command()
@@ -65,6 +65,26 @@ class Twitter:
                 await self.bot.say(json['errors'][0]['message'])
                 return
             await self.bot.say('followed ' + json['name'] + '(' +
+                               'https://twitter.com/' + user + ')')
+
+    @commands.command()
+    async def unfollow(self, user: str = ""):
+        """unfollow a user"""
+        if user == "":
+            return
+
+        url = 'https://api.twitter.com/1.1/friendships/destroy.json'
+        t_params = self._generate_parameters()
+        t_header = self._generate_header('post', url, t_params,
+                                         screen_name=user)
+        # enc_msg = self._percent_enc(message)
+        async with session.post(
+                url, data={'screen_name': user}, headers=t_header) as r:
+            json = await r.json()
+            if r.status != 200:
+                await self.bot.say(json['errors'][0]['message'])
+                return
+            await self.bot.say('unfollowed ' + json['name'] + '(' +
                                'https://twitter.com/' + user + ')')
 
     @commands.command()
@@ -91,9 +111,33 @@ class Twitter:
                 return
             await self.bot.say('retweeted')
 
+    @commands.command(name='deletetweet')
+    async def _delete_tweet(self, tweet: str = ""):
+        """retweets a tweet given by id"""
+        if tweet == "":
+            return
+        elif not tweet.isnumeric():
+            split = tweet.split('/')
+            rt = split[-1]
+            if not rt.isnumeric():
+                rt = split[-2]
+        else:
+            rt = tweet
+        url = 'https://api.twitter.com/1.1/statuses/destroy/' + rt + '.json'
+        t_params = self._generate_parameters()
+        t_header = self._generate_header('post', url, t_params)
+        # enc_msg = self._percent_enc(message)
+        async with session.post(
+                url, data={}, headers=t_header) as r:
+            json = await r.json()
+            if r.status != 200:
+                await self.bot.say(json['errors'][0]['message'])
+                return
+            await self.bot.say('deleted')
+
     @commands.command()
-    async def mention(self, tweet: str = "", *, message: str = ""):
-        """replies to a specific tweet id ([id] [@user] [message])"""
+    async def reply(self, tweet: str = "", *, message: str = ""):
+        """replies to a specific tweet id ((id) (@user) (message))"""
         if tweet == "":
             return
         elif not tweet.isnumeric():
@@ -126,6 +170,80 @@ class Twitter:
                 return
             await self.bot.say('https://twitter.com/botterypottery/status/' + \
                                json['id_str'])
+
+    @commands.command()
+    async def trends(self, *, message: str = ""):
+        """lists worldwide or location based trends"""
+        if message == "":
+            woeid = 1
+            output = 'trending worldwide'
+        else:
+            url = 'https://api.twitter.com/1.1/trends/available.json'
+            t_params = self._generate_parameters()
+            t_header = self._generate_header('get', url, t_params)
+            async with session.get(
+                    url, headers=t_header) as r:
+                json = await r.json()
+                if r.status != 200:
+                    await self.bot.say(json['errors'][0]['message'])
+                    return
+                search_complete = False
+                index = -1
+                woeid = -1
+                while not search_complete:
+                    index += 1
+                    if index >= len(json) - 1:
+                        await self.bot.say('couldnt find that location')
+                        return
+                    elif index % 10 == 0:
+                        await asyncio.sleep(0.01)
+                    if json[index]['country'].lower() == message.lower():
+                        search_complete = True
+                        woeid = json[index]['woeid']
+                    elif json[index]['name'].lower() == message.lower():
+                        search_complete = True
+                        woeid = json[index]['woeid']
+                output = 'trends from ' + json[index]['country'] + \
+                                   ', ' + json[index]['name']
+
+        url = 'https://api.twitter.com/1.1/trends/place.json'
+        t_params = self._generate_parameters()
+        t_header = self._generate_header('get', url, t_params,
+                                         id=str(woeid))
+        # enc_msg = self._percent_enc(message)
+        async with session.get(
+                url, params=[('id', woeid)], headers=t_header) as r:
+            json = await r.json()
+            if r.status != 200:
+                await self.bot.say(json['errors'][0]['message'])
+                return
+            for trend in json[0]['trends']:
+                output += '\n"' + trend['name'] + '"'
+                if trend['tweet_volume'] is not None:
+                    output += ': ' + str(trend['tweet_volume']) + ' tweets'
+            await self.bot.say(output)
+
+    @commands.command()
+    async def mentions(self):
+        """last 20 tweets mentioning YOU"""
+        url = 'https://api.twitter.com/1.1/statuses/mentions_timeline.json'
+        t_params = self._generate_parameters()
+        t_header = self._generate_header('get', url, t_params)
+        # enc_msg = self._percent_enc(message)
+        async with session.get(
+                url, headers=t_header) as r:
+            json = await r.json()
+            if r.status != 200:
+                await self.bot.say(json['errors'][0]['message'])
+                return
+            '''
+            output = ""
+            for trend in json[0]['trends']:
+                output += '\n"' + trend['name'] + '"'
+                if trend['tweet_volume'] is not None:
+                    output += ': ' + str(trend['tweet_volume']) + ' tweets'
+            await self.bot.say(output)
+            '''
 
     def _generate_signature(self, method, url, parameters):
         enc_parameters = {}
