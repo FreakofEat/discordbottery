@@ -47,6 +47,7 @@ class AudioItem:
                 # print(self.audio_id)
                 self.url = gpmapi.get_stream_url(
                     self.audio_id, str(os.environ['GPM_DEVICEID'])[2:])
+                gpmapi.increment_song_playcount(self.audio_id)
             self.download_thread = UrlDownloader(self.url, self.sys_location)
             self.download_thread.start()
             while not os.path.exists(self.sys_location) or \
@@ -656,6 +657,31 @@ class Voice:
         """stops the radio!!!"""
         if ctx.message.server.id in self.voice_connections:
             await self.voice_connections[ctx.message.server.id].stop_radio()
+
+    @commands.command(name='vfix', pass_context=True)
+    async def voice_fix(self, ctx):
+        """sometimes things go wrong & ur just gonna have to `vfix"""
+        # any general fixes go here
+        if ctx.message.server.id in self.voice_connections:
+            voice_channel = self.voice_connections[
+                ctx.message.server.id].voice_client.channel
+            await self.voice_connections[
+                ctx.message.server.id].voice_client.disconnect()
+            v_client = self.bot.join_voice_channel(voice_channel)
+            self.voice_connections[ctx.message.server.id].voice_client = \
+                v_client
+            if self.bot.voice_client_in(ctx.message.server) is None:
+                voice_channel = None
+                if ctx.message.author.voice.voice_channel is None:
+                    for channel in ctx.message.server.channels:
+                        if channel.type == discord.ChannelType.voice:
+                            voice_channel = channel
+                else:
+                    voice_channel = ctx.message.author.voice.voice_channel
+                self.voice_connections[ctx.message.server.id] = \
+                    VoiceConnection(self.bot,
+                        await self.bot.join_voice_channel(voice_channel))
+
 
 async def check_gpm_auth(client_type=0):
     # client_type=0: MobileClient()
