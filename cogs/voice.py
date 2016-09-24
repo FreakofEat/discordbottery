@@ -201,8 +201,8 @@ class VoiceConnection:
                 self.next_song = self.playlist.popleft()
                 await self.next_song.start_download()
             elif len(self.radio_queue) < 5:
-                await self._add_radio_leftovers(
-                    5-len(self.radio_queue))
+                if len(self.voice_client.channel.voice_members) > 1:
+                    await self._add_radio_leftovers(5-len(self.radio_queue))
             if self.next_song is not None:
                 await self.next_song.start_download()
         except Exception as e:
@@ -554,6 +554,30 @@ class Voice:
         await self.voice_connections[ctx.message.server.id].add_to_playlist(
             arguments, ctx.message)
 
+    @commands.command(name='album', aliases=['a', 'A'], pass_context=True)
+    async def play_music_album(self, ctx):
+        """plays a song off google play music"""
+        msg = ctx.message.content.split(" ", 1)
+        if len(msg) == 1:
+            return
+
+        if self.voice_connections.get(ctx.message.server.id) is None:
+            voice_channel = None
+            if ctx.message.author.voice.voice_channel is None:
+                for channel in ctx.message.server.channels:
+                    if channel.type == discord.ChannelType.voice:
+                        voice_channel = channel
+            else:
+                voice_channel = ctx.message.author.voice.voice_channel
+            self.voice_connections[ctx.message.server.id] = \
+                VoiceConnection(
+                    self.bot, await self.bot.join_voice_channel(voice_channel))
+
+        arguments = ['voice', '*CHECK_MESSAGEALBUM*', 'gpm', 'false']
+
+        await self.voice_connections[ctx.message.server.id].add_to_playlist(
+            arguments, ctx.message)
+
     @commands.command(name='radio', pass_context=True)
     async def play_music_radio(self, ctx):
         """starts a radio based on a search query
@@ -593,6 +617,18 @@ class Voice:
                 await self.voice_connections[
                     ctx.message.server.id].voice_client.disconnect()
             del self.voice_connections[ctx.message.server.id]
+
+    '''
+    @commands.command(pass_context=True)
+    async def clear(self, ctx):
+        """leaves the voice channel and clears all queues"""
+        if ctx.message.server.id in self.voice_connections:
+            await self.voice_connections[ctx.message.server.id].leave()
+            if self.voice_connections[ctx.message.server.id].is_connected():
+                await self.voice_connections[
+                    ctx.message.server.id].voice_client.disconnect()
+            del self.voice_connections[ctx.message.server.id]
+    '''
 
     @commands.command(pass_context=True)
     async def pause(self, ctx):
