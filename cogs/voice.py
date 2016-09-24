@@ -171,6 +171,8 @@ class VoiceConnection:
 
     async def play_next(self):
         try:
+            if self.voice_client is None:
+                return
             if self.play_next_lock:
                 return
             self.play_next_lock = True
@@ -665,11 +667,23 @@ class Voice:
         if ctx.message.server.id in self.voice_connections:
             voice_channel = self.voice_connections[
                 ctx.message.server.id].voice_client.channel
-            await self.voice_connections[
-                ctx.message.server.id].voice_client.disconnect()
-            v_client = self.bot.join_voice_channel(voice_channel)
+            old_vc = self.voice_connections[ctx.message.server.id].voice_client
+            self.voice_connections[ctx.message.server.id].voice_client = None
+            old_vc.disconnect()
             self.voice_connections[ctx.message.server.id].voice_client = \
-                v_client
+                self.bot.join_voice_channel(voice_channel)
+            if self.bot.voice_client_in(ctx.message.server) is None:
+                voice_channel = None
+                if ctx.message.author.voice.voice_channel is None:
+                    for channel in ctx.message.server.channels:
+                        if channel.type == discord.ChannelType.voice:
+                            voice_channel = channel
+                else:
+                    voice_channel = ctx.message.author.voice.voice_channel
+                self.voice_connections[ctx.message.server.id].voice_client = \
+                    await self.bot.join_voice_channel(voice_channel)
+            await self.voice_connections[ctx.message.server.id].play_next()
+        else:
             if self.bot.voice_client_in(ctx.message.server) is None:
                 voice_channel = None
                 if ctx.message.author.voice.voice_channel is None:
@@ -681,6 +695,7 @@ class Voice:
                 self.voice_connections[ctx.message.server.id] = \
                     VoiceConnection(self.bot,
                         await self.bot.join_voice_channel(voice_channel))
+
 
 
 async def check_gpm_auth(client_type=0):
