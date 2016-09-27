@@ -63,6 +63,12 @@ class AudioItem:
                 await asyncio.sleep(10)
             if os.path.exists(self.sys_location):
                 os.remove(self.sys_location)
+    
+    async def thumb_up(self):
+        if self.audio_id[0] == 'T':
+            song = gpmapi.get_track_info(self.audio_id)
+            song['rating'] = '5'
+            gpmapi.change_song_metadata(song)
 
     def get_audio_info(self):
         return self.title
@@ -96,6 +102,7 @@ class VoiceConnection:
     next_song = None
     is_playing = False
     play_next_lock = False
+    ffmpeg_options = ''
 
     def __init__(self, bot, voice_client):
         self.playlist = deque()
@@ -183,6 +190,8 @@ class VoiceConnection:
             elif len(self.radio_queue) > 0:
                 cur_song = self.radio_queue.popleft()
             elif len(self.radio_leftovers) > 0:
+                if len(self.voice_client.channel.voice_members) < 2:
+                    return
                 radio_msg_content = 'adding to queue'
                 radio_msg = await self.bot.send_message(
                     self.radio_channel, 'adding to queue')
@@ -665,6 +674,7 @@ class Voice:
         """sometimes things go wrong & ur just gonna have to `vfix"""
         # any general fixes go here
         if ctx.message.server.id in self.voice_connections:
+            print('vfix 1-1')
             voice_channel = self.voice_connections[
                 ctx.message.server.id].voice_client.channel
             old_vc = self.voice_connections[ctx.message.server.id].voice_client
@@ -673,6 +683,7 @@ class Voice:
             self.voice_connections[ctx.message.server.id].voice_client = \
                 self.bot.join_voice_channel(voice_channel)
             if self.bot.voice_client_in(ctx.message.server) is None:
+                print('vfix 1-2')
                 voice_channel = None
                 if ctx.message.author.voice.voice_channel is None:
                     for channel in ctx.message.server.channels:
@@ -684,6 +695,7 @@ class Voice:
                     await self.bot.join_voice_channel(voice_channel)
             await self.voice_connections[ctx.message.server.id].play_next()
         else:
+            print('vfix 2-1')
             if self.bot.voice_client_in(ctx.message.server) is None:
                 voice_channel = None
                 if ctx.message.author.voice.voice_channel is None:
