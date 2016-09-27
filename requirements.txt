@@ -5,3 +5,4 @@ gmusicapi
 youtube-dl
 psycopg2
 selenium
+markovify

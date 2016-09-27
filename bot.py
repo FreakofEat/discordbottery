@@ -3,7 +3,7 @@ from discord.ext import commands
 import asyncio
 import configparser
 import random
-from cogs import general, games, voice, queries, twitter
+from cogs import general, games, voice, queries, twitter, markov
 import os
 import psycopg2
 import urllib.parse
@@ -142,6 +142,7 @@ if __name__ == '__main__':
     bot.add_cog(queries.Queries(bot))
     bot.add_cog(games.Games(bot, conn))
     bot.add_cog(twitter.Twitter(bot))
+    bot.add_cog(markov.Markov(bot))
 
     bot.loop.create_task(zooboys())
     bot.run(str(os.environ['DISCORD_TOKEN']))
