@@ -39,39 +39,35 @@ class Markov:
                 await self.bot.say('couldnt find that user')
                 return
         file = file[0:-5]  # minus .json
-        print(user)
         with open(directory + file, mode='r',
                   encoding='utf-8') as f:
             text = f.read()
         #chain = markovify.Chain.from_json(text)
         #text_model = markovify.Text.from_chain(text)
         text_model = MyMarkov(text)  # make markov each time
-        print("markov'd")
         output = None
         attempts = 0
         if seed == "":
-            while output is None and attempts < 15:
+            while output is None and attempts < 17:
                 attempts += 1
-                if attempts < 8:
-                    output = text_model.make_sentence(tries=4)
+                if attempts < 10:
+                    output = text_model.make_sentence(tries=3)
                 else:
-                    print('try harder')
                     output = text_model.make_sentence(
-                        max_overlap_ratio=1, max_overlap_total=15, tries=5)
+                        max_overlap_ratio=1, max_overlap_total=15, tries=4)
         else:
-            while output is None and attempts < 15:
+            while output is None and attempts < 17:
                 attempts += 1
-                if attempts < 8:
+                if attempts < 10:
                     output = text_model.make_sentence_with_start(seed, tries=3)
                 else:
-                    print('try harder')
                     output = text_model.make_sentence_with_start(
                         seed, max_overlap_ratio=1,
-                        max_overlap_total=15, tries=5)
+                        max_overlap_total=15, tries=4)
         if output is not None:
             await self.bot.say(user + ": " + output)
         else:
-            print('markovnfail')
+            print(user + ' markovnfail')
 
     def _get_random_markov_file(self, server):
         directory = 'data/' + server.name + ' - ' + server.id + '/Markov/'
@@ -98,10 +94,12 @@ class Markov:
             users = dict()
             for channel in server.channels:
                 async for message in self.bot.logs_from(channel, limit=100000):
-                    if message.author.id in users.keys():
-                        users[message.author.id] += message.content + '\n'
-                    else:
-                        users[message.author.id] = message.content + '\n'
+                    if not message.content.startswith('`markov') or \
+                            not message.content.startswith('`markovn'):
+                        if message.author.id in users.keys():
+                            users[message.author.id] += message.content + '\n'
+                        else:
+                            users[message.author.id] = message.content + '\n'
             for key in users.keys():
                 with open(directory + key, mode='w', encoding='utf-8') as file:
                     file.write(users[key])
