@@ -8,6 +8,7 @@ import os
 import psycopg2
 import urllib.parse
 import time
+import random
 
 
 config = configparser.ConfigParser()
@@ -55,7 +56,10 @@ async def on_message(message):
         await asyncio.sleep(3)
         await bot.send_message(message.channel, "THIS IS MY LAST RESORT")
     elif message.content.lower() == 'damn':
-        await bot.send_message(message.channel, "daniel")
+        if random.randint(0, 100) == 72:
+            await bot.send_message(message.channel, ":dd: daniel :dd:")
+        else:
+            await bot.send_message(message.channel, "daniel")
     elif message.content.lower() in ('huda', 'hudda'): #TBH Not sure how it's spelled
         await bot.send_message(message.channel, "hecc")
     elif message.content.lower().find('vmboys') != -1:
