@@ -21,45 +21,50 @@ class Markov:
         directory = 'data/' + server.name + ' - ' + server.id + '/Markov/'
         file_list = []
         for entry in os.scandir(directory):
-            if entry.is_file() and entry.name.endswith('.json'):
+            if entry.is_file() and not entry.name.endswith('.json'):
                 file_list.append(entry.name)
-        if user == "":
+        if user == "" or user.lower() == "random":
             file = file_list[random.randrange(0, stop=len(file_list))]
-            user = file[0:-5]
+            user = file #file[0:-5]
             for member in server.members:
                 if member.id == user:
                     user = member.name
         else:
             file = ""
             for member in server.members:
-                if member.name == user or member.id == user:
-                    file = member.id + '.json'
+                if member.name.lower() == user.lower() or \
+                        member.id == user or member.nick == user:
+                    file = member.id #+ '.json'
                     user = member.name
             if file == "":
                 await self.bot.say('couldnt find that user')
                 return
-        file = file[0:-5]  # minus .json
+        #file = file[0:-5]  # minus .json
         with open(directory + file, mode='r',
                   encoding='utf-8') as f:
             text = f.read()
+        if seed == "":
+            state_s = 2
+        else:
+            state_s = len(seed.split())
         #chain = markovify.Chain.from_json(text)
         #text_model = markovify.Text.from_chain(text)
-        text_model = MyMarkov(text)  # make markov each time
+        text_model = MyMarkov(text, state_size=state_s)  # make markov each time
         output = None
         attempts = 0
         if seed == "":
             while output is None and attempts < 17:
                 attempts += 1
-                if attempts < 10:
-                    output = text_model.make_sentence(tries=3)
+                if attempts < 11:
+                    output = text_model.make_sentence(tries=4)
                 else:
                     output = text_model.make_sentence(
                         max_overlap_ratio=1, max_overlap_total=15, tries=4)
         else:
             while output is None and attempts < 17:
                 attempts += 1
-                if attempts < 10:
-                    output = text_model.make_sentence_with_start(seed, tries=3)
+                if attempts < 11:
+                    output = text_model.make_sentence_with_start(seed, tries=4)
                 else:
                     output = text_model.make_sentence_with_start(
                         seed, max_overlap_ratio=1,
@@ -80,7 +85,7 @@ class Markov:
         for member in server.members:
             if member.id == user:
                 user = member.name
-        return (user, file)
+        return user, file
 
     @commands.command(name='log', pass_context=True)
     async def _get_logs(self, ctx):
