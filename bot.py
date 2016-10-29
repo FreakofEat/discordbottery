@@ -3,11 +3,10 @@ from discord.ext import commands
 import asyncio
 import configparser
 import random
-from cogs import general, games, voice, queries, twitter, markov
+from cogs import general, games, voice, queries, twitter, markov, tasks
 import os
 import psycopg2
 import urllib.parse
-import time
 import random
 
 
@@ -110,15 +109,6 @@ async def bank_setup():
     print('bank setup')
     cur.close()
 
-async def zooboys():
-    await bot.wait_until_ready()
-    while not bot.is_closed:
-        cur_time = time.localtime()
-        if cur_time.tm_hour == 17 and cur_time.tm_min == 48:
-            await bot.send_message(bot.get_channel('144849743368028160'),
-                                   '11:11 make a wish')
-        await asyncio.sleep(60)
-
 @bot.event
 async def on_server_join(server):
     if not os.path.exists('data/' + server.name + ' - ' + server.id):
@@ -144,9 +134,13 @@ if __name__ == '__main__':
     bot.add_cog(twitter.Twitter(bot))
     bot.add_cog(markov.Markov(bot))
 
-    bot.loop.create_task(zooboys())
+    task_obj = tasks.Tasks(bot)
+
+    bot.loop.create_task(task_obj.zooboys())
+    bot.loop.create_task(task_obj.who_up())
     bot.run(str(os.environ['DISCORD_TOKEN']))
 
     queries.close_aiohttp()
     twitter.close_aiohttp()
+    tasks.close_aiohttp()
 

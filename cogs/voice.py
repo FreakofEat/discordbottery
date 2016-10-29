@@ -442,8 +442,18 @@ class VoiceConnection:
         if len(hits_list['station_hits']) > 0:
             station_dict = hits_list['station_hits'][0]['station']
             title = station_dict['name'] + " (Pre-made station)"
-            station_id = station_dict['seed']['curatedStationId']
-        elif len(hits_list['song_hits']) > 0:
+            if 'curatedStationId' in station_dict['seed']:
+                station_id = station_dict['seed']['curatedStationId']
+            elif 'genreId' in station_dict['seed']:
+                audio_id = station_dict['seed']['genreId']
+                station_id = gpmapi.create_station('discord radio',
+                                                   genre_id=audio_id)
+            else:
+                station_id = None
+            if station_id is not None:
+                return title, station_id
+
+        if len(hits_list['song_hits']) > 0:
             track_dict = hits_list['song_hits'][0]['track']
             audio_id = track_dict['nid']
             title = track_dict['title'] + ' - ' + track_dict[
