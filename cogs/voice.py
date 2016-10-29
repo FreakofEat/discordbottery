@@ -440,7 +440,7 @@ class VoiceConnection:
     async def _get_gpm_station(self, query):
         hits_list = gpmapi.search(query, max_results=1)
         if len(hits_list['station_hits']) > 0:
-            station_dict = hits_list['station_hits'][0]['track']
+            station_dict = hits_list['station_hits'][0]['station']
             title = station_dict['name'] + " (Pre-made station)"
             station_id = station_dict['seed']['curatedStationId']
         elif len(hits_list['song_hits']) > 0:
