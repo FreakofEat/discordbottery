@@ -63,7 +63,7 @@ class AudioItem:
                 await asyncio.sleep(10)
             if os.path.exists(self.sys_location):
                 os.remove(self.sys_location)
-    
+
     async def thumb_up(self):
         if self.audio_id[0] == 'T':
             song = gpmapi.get_track_info(self.audio_id)
@@ -349,9 +349,14 @@ class VoiceConnection:
                 self.radio_channel = message.channel
                 return 'gpm radio', [song_item]
             elif arguments[1] == '*CHECK_MESSAGEALBUM*':
+                test_pos = query.rsplit(" ", 0)
+                if test_pos.isdigit():
+                    pos = int(test_pos) - 1
+                else:
+                    pos = 0
                 search = gpmapi.search(query, max_results=1)
                 if len(search['album_hits']) > 0:
-                    album_dict = search['album_hits'][0]['album']
+                    album_dict = search['album_hits'][pos]['album']
                     title = album_dict['name'] + ' - ' + \
                             album_dict['albumArtist']
                     await self.bot.send_message(message.channel, title)
@@ -434,7 +439,11 @@ class VoiceConnection:
 
     async def _get_gpm_station(self, query):
         hits_list = gpmapi.search(query, max_results=1)
-        if len(hits_list['song_hits']) > 0:
+        if len(hits_list['station_hits']) > 0:
+            station_dict = hits_list['station_hits'][0]['track']
+            title = station_dict['name'] + " (Pre-made station)"
+            station_id = station_dict['seed']['curatedStationId']
+        elif len(hits_list['song_hits']) > 0:
             track_dict = hits_list['song_hits'][0]['track']
             audio_id = track_dict['nid']
             title = track_dict['title'] + ' - ' + track_dict[
