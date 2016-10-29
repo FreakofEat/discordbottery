@@ -27,8 +27,8 @@ class Tasks:
         await self.bot.wait_until_ready()
         who_up_words = ['NOTION', 'NUTRIENT', 'SAD', ':clown::clown::clown:',
                         'NEIGHBOUR', 'WILD', 'THOT', 'DANIEL', 'NEUTRON']
-        who_up_min = random.randint(13, 59)
-        who_up_hour = 4
+        who_up_min = random.randint(27, 59)
+        who_up_hour = 5
         while not self.bot.is_closed:
             cur_time = time.localtime()
             if cur_time.tm_hour == who_up_hour and cur_time.tm_min == who_up_min:
