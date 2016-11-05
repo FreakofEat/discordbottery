@@ -42,6 +42,7 @@ c_commands = {}
 @bot.event
 async def on_message(message):
     # handles custom commands first
+    await react_world(message)
     if message.author.id == bot.user.id:
         return
     if message.content == '':
@@ -69,6 +70,26 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
+async def react_world(message):
+    if message.server.id != '144849743368028160':
+        return
+    # SORRY REACTION
+    if 'tsun' in message.content.lower():
+        emoji_list = message.server.emojis
+        sorry_emoji = ':sorry:'
+        for emoji in emoji_list:
+            if 'sorry' in emoji.name.lower():
+                sorry_emoji = emoji
+        await bot.add_reaction(message, sorry_emoji)
+    # GANG'S ALL HERE
+    if 'gang' in message.content.lower():
+        emoji_list = message.server.emojis
+        gang = []
+        for emoji in emoji_list:
+            if 'gang' in emoji.name.lower():
+                gang.append(emoji)
+        for g_emoji in gang:
+            await bot.add_reaction(message, g_emoji)
 
 async def custom_command_check(message):
     query = message.content[1:]
