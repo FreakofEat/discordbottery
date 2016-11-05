@@ -1,6 +1,6 @@
 cffi
 PyNaCl
-discord.py[voice]==0.11.0
+discord.py[voice]==0.14.2
 gmusicapi
 youtube-dl
 psycopg2
