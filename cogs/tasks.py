@@ -20,13 +20,14 @@ class Tasks:
             cur_time = time.localtime()
             if cur_time.tm_hour == 17 and cur_time.tm_min == 48:
                 await self.bot.send_message(self.bot.get_channel('144849743368028160'),
-                                            '11:::11 makke a wiishh')
+                                            'n')
             await asyncio.sleep(60)
 
     async def who_up(self):
         await self.bot.wait_until_ready()
         who_up_words = ['NOTION', 'NUTRIENT', 'SAD', ':clown::clown::clown:',
-                        'NEIGHBOUR', 'WILD', 'THOT', 'DANIEL', 'NEUTRON']
+                        'NEIGHBOUR', 'WILD', 'THOT', 'DANIEL', 'NEUTRON', 'gnarls barkley',
+                        'neutrino', 'nuremberg', 'sour']
         who_up_min = random.randint(27, 59)
         who_up_hour = 5
         while not self.bot.is_closed:
