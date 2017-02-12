@@ -495,8 +495,11 @@ class VoiceConnection:
         if 'id' in track_dict:
             audio_id = track_dict['id']
             print('id in track_dict: ' + title)
+        elif 'storeId' in track_dict:
+            audio_id = track_dict['storeId']
         else:
             audio_id = track_dict['nid']
+            print('nid in track_dict: ' + title)
         system_location = self.folder_path + '/' + audio_id + '.mp3'
         #try:
         #url = gpmapi.get_stream_url(audio_id,
