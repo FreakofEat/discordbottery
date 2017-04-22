@@ -11,6 +11,7 @@ from collections import deque
 
 gpmapi = Mobileclient(debug_logging=False)
 
+
 class UrlDownloader(threading.Thread):
     def __init__(self, url, file_location):
         threading.Thread.__init__(self)
@@ -33,13 +34,16 @@ class AudioItem:
     download_thread = None
     player = None
     invoked_channel = None
+    invoker = None
 
-    def __init__(self, url, title, audio_id, sys_location, invoked_channel):
+    def __init__(self, url, title, audio_id, sys_location, invoked_channel,
+                 invoker=""):
         self.url = url
         self.title = title
         self.audio_id = audio_id
         self.sys_location = sys_location
         self.invoked_channel = invoked_channel
+        self.invoker = invoker
 
     async def start_download(self):
         if not os.path.exists(self.sys_location):
@@ -76,6 +80,9 @@ class AudioItem:
     def get_location(self):
         return self.sys_location
 
+    def get_invoker(self):
+        return self.invoker
+
     def __eq__(self, other):
         return self.audio_id == other.audio_id
 
@@ -92,6 +99,7 @@ class VoiceConnection:
     bot = None
     playlist = None
     cur_player = None
+    cur_song = None
     radio_leftovers = []
     radio_queue = None
     radio_channel = None
@@ -150,10 +158,10 @@ class VoiceConnection:
         if not self.is_playing:
             self.is_playing = True
             self.play_next_lock = False
-            cur_song = self.playlist.popleft()
-            await cur_song.start_download()
-            cur_song.player = await self.play(cur_song)
-            self.cur_player = cur_song.player
+            self.cur_song = self.playlist.popleft()
+            await self.cur_song.start_download()
+            self.cur_song.player = await self.play(self.cur_song)
+            self.cur_player = self.cur_song.player
         if audio_type == 'gpm radio':
             print('adding some')
             await self._add_radio_leftovers(2)
@@ -163,7 +171,7 @@ class VoiceConnection:
                 await audio_item.start_download()
 
     async def force_play(self, arguments, query):
-        this_audio = await self.create_audio_item(arguments, query)
+        temp, this_audio = await self.create_audio_item(arguments, query)
         if this_audio is None:
             return
         this_audio = this_audio[0]
@@ -184,11 +192,11 @@ class VoiceConnection:
                 return
             self.play_next_lock = True
             if self.next_song is not None:
-                cur_song = self.next_song
+                self.cur_song = self.next_song
             elif len(self.playlist) > 0:
-                cur_song = self.playlist.popleft()
+                self.cur_song = self.playlist.popleft()
             elif len(self.radio_queue) > 0:
-                cur_song = self.radio_queue.popleft()
+                self.cur_song = self.radio_queue.popleft()
             elif len(self.radio_leftovers) > 0:
                 if len(self.voice_client.channel.voice_members) < 2:
                     return
@@ -197,17 +205,17 @@ class VoiceConnection:
                     self.radio_channel, 'adding to queue')
                 await self._add_radio_leftovers(
                     5, radio_msg=radio_msg, radio_msg_content=radio_msg_content)
-                cur_song = self.radio_queue.popleft()
+                self.cur_song = self.radio_queue.popleft()
             else:
                 self.is_playing = False
                 self.play_next_lock = False
                 return
-            await cur_song.start_download()
-            cur_song.player = await self.play(cur_song)
+            await self.cur_song.start_download()
+            self.cur_song.player = await self.play(self.cur_song)
             await self.bot.send_message(
-                cur_song.invoked_channel, "**Now Playing:** " + cur_song.title)
+                self.cur_song.invoked_channel, "**Now Playing:** " + self.cur_song.title)
             self.next_song = None
-            self.cur_player = cur_song.player
+            self.cur_player = self.cur_song.player
             self.play_next_lock = False
             if len(self.playlist) > 0:
                 self.next_song = self.playlist.popleft()
@@ -229,6 +237,7 @@ class VoiceConnection:
             print(repr(e))
 
     def after_audio(self, audio_item):
+        self.cur_song = None
         coro = self.clean_up(audio_item) # client.send_message(text_channel, 'fdsfsdf')
         fut = asyncio.run_coroutine_threadsafe(coro, self.bot.loop)
         try:
@@ -315,7 +324,7 @@ class VoiceConnection:
                             '.' + result['ext']
                         items.append(AudioItem(
                             url, title, audio_id, system_location,
-                            message.channel))
+                            message.channel, message.author.name))
                     return 'ydl playlist', items
                 url = ydl_results['url']
                 title = ydl_results['title'] + ' - ' + ydl_results['uploader']
@@ -323,7 +332,8 @@ class VoiceConnection:
                 system_location = self.folder_path + '/' + audio_id + \
                     '.' + ydl_results['ext']
                 return 'ydl single', [AudioItem(
-                    url, title, audio_id, system_location, message.channel)]
+                    url, title, audio_id, system_location, message.channel,
+                    message.author.name)]
         elif arguments[2] == 'gpm':
             if not await check_gpm_auth(client_type=0):
                 return 'auth fail', [None]
@@ -334,7 +344,7 @@ class VoiceConnection:
                         return 'gpm radio no results', [None]
                     radio_msg_content = 'starting "' + title + '" radio'
                     radio_msg = await self.bot.send_message(message.channel,
-                                                          radio_msg_content)
+                                                            radio_msg_content)
                     song_list = gpmapi.get_station_tracks(station_id,
                                                           num_tracks=125)
                     gpmapi.delete_stations([station_id])
@@ -342,7 +352,7 @@ class VoiceConnection:
                     song_list = gpmapi.get_station_tracks('IFL', num_tracks=50)
                     radio_msg_content = 'starting random radio'
                     radio_msg = await self.bot.send_message(message.channel,
-                                                          radio_msg_content)
+                                                            radio_msg_content)
                 self.radio_leftovers = song_list[1:]
                 title, song_item = await self._get_gpm_song(song_list[0],
                                                             message.channel)
@@ -420,15 +430,20 @@ class VoiceConnection:
         self.radio_leftovers = []
 
     async def get_queue_string(self):
-        queue = ""
+        queue = ''
+        if self.cur_song is not None:
+            queue += 'Now: {} ({})\n'.format(self.cur_song.title,
+                                             self.cur_song.invoker)
         if self.next_song is not None:
-            queue += 'Next: ' + self.next_song.title + '\n'
+            queue += 'Next: {} ({})\n'.format(self.next_song.title,
+                                              self.next_song.invoker)
         for i in range(len(self.playlist)):
-            queue += str(i+1) + ': ' + self.playlist[i].title + '\n'
+            queue += '{} : {} ({})\n'.format(i+1, self.playlist[i].title,
+                                             self.playlist[i].invoker)
         if len(self.radio_queue) > 0:
             queue += 'radio:\n'
         for i in range(len(self.radio_queue)):
-            queue += str(i+1) + ': ' + self.radio_queue[i].title + '\n'
+            queue += '{} : {}\n'.format(i+1, self.radio_queue[i].title)
         return queue
 
     async def dequeue(self, value):
@@ -731,8 +746,8 @@ class Voice:
                         await self.bot.join_voice_channel(voice_channel))
 
 
-
 async def check_gpm_auth(client_type=0):
+    """ check if gpm is logged in and is subbed"""
     # client_type=0: MobileClient()
     # TODO: client_type=1: MusicManager()
     if client_type == 0:

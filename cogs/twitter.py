@@ -23,9 +23,10 @@ class Twitter:
 
     @commands.command()
     async def tweet(self, *, message: str=""):
-        """tweet a message and more... (`help twitter for more...)
+        """tweet a message and more... (`help tweet for more...)
         d [username] [message] to dm
-        @[username] [message] to sneak into mentions
+        @[username] [message] to mention (might not properly tag them, 
+                                          try `reply otherwise)
         https://support.twitter.com/articles/14020 for more..."""
         if message == "":
             return
@@ -113,7 +114,7 @@ class Twitter:
 
     @commands.command(name='deletetweet')
     async def _delete_tweet(self, tweet: str = ""):
-        """retweets a tweet given by id"""
+        """deletes a tweet given by id"""
         if tweet == "":
             return
         elif not tweet.isnumeric():

@@ -5,8 +5,9 @@ import markovify
 import re
 
 class Markov:
-    """markov with https://github.com/jsvine/markovify
-    thanks buzzfeed"""
+    """markov generate your friends
+    you'll have to have used `log once in the last 12ish hours to `markov
+    uses Markovify (https://github.com/jsvine/markovify)"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -16,7 +17,8 @@ class Markov:
         """markov sentence MAKER. will occasionally fail with no output
         `markov [user] [seed]
         `markov without a user picks a random user
-        seed must be exactly 2 words"""
+        seed must be exactly 2 words
+        a silent failure is likely due to an untalkative user being chosen"""
         server = ctx.message.server
         directory = 'data/' + server.name + ' - ' + server.id + '/Markov/'
         file_list = []
@@ -89,7 +91,8 @@ class Markov:
 
     @commands.command(name='log', pass_context=True)
     async def _get_logs(self, ctx):
-        """dont use this or the bot will be unusable for like 30 mins"""
+        """grabs the entire chatlog of the server. don't use it more than 
+        once every few minutes or else.........."""
         for server in self.bot.servers:
             directory = 'data/' + server.name + ' - ' + server.id + '/Markov'
             if not os.path.exists(directory):

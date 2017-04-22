@@ -28,7 +28,7 @@ class Tasks:
         who_up_words = ['NOTION', 'NUTRIENT', 'SAD', ':clown::clown::clown:',
                         'NEIGHBOUR', 'WILD', 'THOT', 'DANIEL', 'NEUTRON', 'gnarls barkley',
                         'neutrino', 'nuremberg', 'sour', 'power!', 'coward', 'flower',
-                        'idiot', 'useless']
+                        'idiot', 'useless', 'horus']
         who_up_min = random.randint(27, 59)
         who_up_hour = 5
         while not self.bot.is_closed:
@@ -49,7 +49,8 @@ class Tasks:
                         timeout=180,
                         channel=self.bot.get_channel('144849743368028160'))
                     image_url = await queries.bing_img_search(
-                        'real nigga hours', safe=False,
+                        'real {} hours'.format(who_up_words[who_up_word]),
+                        safe=False,
                         offset=random.randint(0, 100))
                     async with session.get(image_url) as r:
                         file_name = image_url.rsplit('/', 1)[1]

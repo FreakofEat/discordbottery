@@ -186,6 +186,8 @@ async def get_html_js(url):
     return html_thread.html
 
 async def bing_img_search(query, safe=True, offset=0):
+    """doesn't work anymore"""
+    return None
     base_url = 'https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources=%27image%27'
     search_q = '%27' + query.replace(' ', '+') + '%27'
     if not safe:
