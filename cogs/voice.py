@@ -468,7 +468,7 @@ class VoiceConnection:
             station_dict = hits_list['station_hits'][0]['station']
             title = station_dict['name'] + " (Pre-made station)"
             if 'curatedStationId' in station_dict['seed']:
-                station_id = station_dict['seed']['curatedStationId']
+                audio_id = station_dict['seed']['curatedStationId']
                 station_id = gpmapi.create_station('discord radio',
                                                    curated_station_id=audio_id)
             elif 'genreId' in station_dict['seed']:
@@ -490,7 +490,6 @@ class VoiceConnection:
             else:
                 audio_id = track_dict['nid']
                 print('nid in track_dict: ' + title)
-            audio_id = track_dict['storeId']
             title = track_dict['title'] + ' - ' + track_dict[
                 'artist']
             station_id = gpmapi.create_station('discord radio',
