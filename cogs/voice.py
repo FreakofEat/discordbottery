@@ -140,9 +140,7 @@ class VoiceConnection:
         # self.radio_leftovers = []
         audio_type, audio_item_list = await self.create_audio_item(
             arguments, query, message)
-        if audio_type == None:
-            return
-        elif audio_type == 'gpm radio':
+        if audio_type == 'gpm radio':
             self.radio_queue = deque()
         for audio_item in audio_item_list:
             if audio_item is None:
@@ -309,13 +307,13 @@ class VoiceConnection:
                     await self.bot.send_message(
                         message.channel,
                         "some error, video not found or it's blocked in the US :(")
-                    return
+                    return 'error', [None]
                 # Just a youtube search
                 if arguments[1] == '*CHECK_MESSAGESEARCH*':
                     await self.bot.send_message(
                         message.channel,
                         ydl_results['entries'][0]['webpage_url'])
-                    return
+                    return 'search', [None]
                 # Create and return AudioItems
                 if 'entries' in ydl_results:
                     await self.bot.send_message(
