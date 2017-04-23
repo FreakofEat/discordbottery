@@ -140,7 +140,9 @@ class VoiceConnection:
         # self.radio_leftovers = []
         audio_type, audio_item_list = await self.create_audio_item(
             arguments, query, message)
-        if audio_type == 'gpm radio':
+        if audio_type == None:
+            return
+        elif audio_type == 'gpm radio':
             self.radio_queue = deque()
         for audio_item in audio_item_list:
             if audio_item is None:
@@ -349,6 +351,7 @@ class VoiceConnection:
                     title, station_id = await self._get_gpm_station(query)
                     if station_id is None:
                         return 'gpm radio no results', [None]
+                    print('{}'.format(station_id))
                     radio_msg_content = 'starting "' + title + '" radio'
                     radio_msg = await self.bot.send_message(message.channel,
                                                             radio_msg_content)
