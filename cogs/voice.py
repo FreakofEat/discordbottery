@@ -308,6 +308,13 @@ class VoiceConnection:
                         message.channel,
                         "some error, video not found or it's blocked in the US :(")
                     return
+                # Just a youtube search
+                if arguments[1] == '*CHECK_MESSAGESEARCH*'
+                    await self.bot.send_message(
+                        message.channel,
+                        ydl_results['entries'][0]['webpage_url'])
+                    return
+                # Create and return AudioItems
                 if 'entries' in ydl_results:
                     await self.bot.send_message(
                         message.channel,
@@ -346,8 +353,8 @@ class VoiceConnection:
                     radio_msg = await self.bot.send_message(message.channel,
                                                             radio_msg_content)
                     song_list = gpmapi.get_station_tracks(station_id,
-                                                          num_tracks=125)
-                    gpmapi.delete_stations([station_id])
+                                                          num_tracks=50)
+                    #gpmapi.delete_stations([station_id])
                 else:
                     song_list = gpmapi.get_station_tracks('IFL', num_tracks=50)
                     radio_msg_content = 'starting random radio'
@@ -575,6 +582,30 @@ class Voice:
                     self.bot, await self.bot.join_voice_channel(voice_channel))
 
         arguments = ['voice', '*CHECK_MESSAGEQ*', 'website', 'false']
+
+        await self.voice_connections[ctx.message.server.id].add_to_playlist(
+            arguments, ctx.message)
+            
+    @commands.command(name='youtubesearch', aliases=['ys', 'Ys'], pass_context=True)
+    async def search_youtube(self, ctx):
+        """searches for a query on youtube"""
+        msg = ctx.message.content.split(" ", 1)
+        if len(msg) == 1:
+            ctx.message.content = '`youtubesearch ys joanna newsom'
+
+        if self.voice_connections.get(ctx.message.server.id) is None:
+            voice_channel = None
+            if ctx.message.author.voice.voice_channel is None:
+                for channel in ctx.message.server.channels:
+                    if channel.type == discord.ChannelType.voice:
+                        voice_channel = channel
+            else:
+                voice_channel = ctx.message.author.voice.voice_channel
+            self.voice_connections[ctx.message.server.id] = \
+                VoiceConnection(
+                    self.bot, await self.bot.join_voice_channel(voice_channel))
+
+        arguments = ['voice', '*CHECK_MESSAGESEARCH*', 'website', 'false']
 
         await self.voice_connections[ctx.message.server.id].add_to_playlist(
             arguments, ctx.message)
