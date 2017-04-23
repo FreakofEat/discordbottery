@@ -309,7 +309,7 @@ class VoiceConnection:
                         "some error, video not found or it's blocked in the US :(")
                     return
                 # Just a youtube search
-                if arguments[1] == '*CHECK_MESSAGESEARCH*'
+                if arguments[1] == '*CHECK_MESSAGESEARCH*':
                     await self.bot.send_message(
                         message.channel,
                         ydl_results['entries'][0]['webpage_url'])
