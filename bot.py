@@ -74,6 +74,7 @@ async def react_world(message):
     if message.server.id != '144849743368028160':
         return
     # SORRY REACTION
+    '''
     if 'tsun' in message.content.lower():
         emoji_list = message.server.emojis
         sorry_emoji = ':sorry:'
@@ -81,6 +82,7 @@ async def react_world(message):
             if 'sorry' in emoji.name.lower():
                 sorry_emoji = emoji
         await bot.add_reaction(message, sorry_emoji)
+    '''
     # GANG'S ALL HERE
     if 'gang' in message.content.lower():
         emoji_list = message.server.emojis
@@ -90,6 +92,14 @@ async def react_world(message):
                 gang.append(emoji)
         for g_emoji in gang:
             await bot.add_reaction(message, g_emoji)
+    # tim
+    if message.author.id == '185607847294271488':
+        emoji_list = message.server.emojis
+        tim = "timgasm"
+        for emoji in emoji_list:
+            if 'timgasm' in emoji.name.lower():
+                tim = emoji
+        await bot.add_reaction(message, tim)
 
 async def custom_command_check(message):
     query = message.content[1:]

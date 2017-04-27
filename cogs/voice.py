@@ -21,6 +21,17 @@ class UrlDownloader(threading.Thread):
     def run(self):
         urllib.request.urlretrieve(self.url, self.file_location)
 
+class ffmpegOption:
+    """
+    Represents an option to pass to ffmpeg
+    """
+    filter_name = ""
+    filter_options = ""
+    
+    def __init__(self, filter_name, filter_options):
+        self.filter_name = filter_name
+        self.filter_options = filter_options
+    
 
 class AudioItem:
     """
@@ -82,6 +93,9 @@ class AudioItem:
 
     def get_invoker(self):
         return self.invoker
+    
+    def set_invoker(self, invoker):
+        self.invoker = invoker
 
     def __eq__(self, other):
         return self.audio_id == other.audio_id
@@ -110,6 +124,7 @@ class VoiceConnection:
     next_song = None
     is_playing = False
     play_next_lock = False
+    audio_filters = list() # holds ffmpegOption objects
     ffmpeg_options = ''
 
     def __init__(self, bot, voice_client):
@@ -250,9 +265,21 @@ class VoiceConnection:
     async def play(self, audio_to_play):
         cur_player = self.voice_client.create_ffmpeg_player(
             audio_to_play.sys_location,
+            options=self.ffmpeg_options,
             after=lambda: self.after_audio(audio_to_play))
         cur_player.start()
         return cur_player
+    
+    async def refresh_filters(self):
+        if len(self.audio_filters) > 0:
+            self.ffmpeg_options = '-filter:a "'
+            for filter in self.audio_filters:
+                self.ffmpeg_options += filter.filter_name + \
+                    filter.filter_options + ','
+            self.ffmpeg_options = self.ffmpeg_options[:-1] + '"'
+        else:
+            self.ffmpeg_options = ''
+        print(self.ffmpeg_options)
 
     async def _add_radio_leftovers(self, num_to_add, radio_msg=None,
                                    radio_msg_content=""):
@@ -364,15 +391,16 @@ class VoiceConnection:
                 self.radio_leftovers = song_list[1:]
                 title, song_item = await self._get_gpm_song(song_list[0],
                                                             message.channel)
+                song_item.set_invoker(message.author.name)
                 self.radio_channel = message.channel
                 return 'gpm radio', [song_item]
             elif arguments[1] == '*CHECK_MESSAGEALBUM*':
-                test_pos = query.rsplit(" ", 0)
-                if test_pos.isdigit():
-                    pos = int(test_pos) - 1
+                test_pos = query.rsplit(" ", 1)
+                if test_pos[0].isdigit():
+                    pos = int(test_pos[0]) - 1
                 else:
                     pos = 0
-                search = gpmapi.search(query, max_results=1)
+                search = gpmapi.search(query, max_results=10)
                 if len(search['album_hits']) > 0:
                     album_dict = search['album_hits'][pos]['album']
                     title = album_dict['name'] + ' - ' + \
@@ -384,6 +412,7 @@ class VoiceConnection:
                     for song in song_list:
                         title, song_item = await self._get_gpm_song(
                             song, message.channel)
+                        song_item.set_invoker(message.author.name)
                         songs.append(song_item)
                 else:
                     return 'gpm album no results', [None]
@@ -395,6 +424,7 @@ class VoiceConnection:
                     title, song_item = await self._get_gpm_song(track_dict,
                                                                 message.channel)
                     await self.bot.send_message(message.channel, title)
+                    song_item.set_invoker(message.author.name)
                     return 'gpm single', [song_item]
                 else:
                     return 'gpm no results', [None]
@@ -459,7 +489,17 @@ class VoiceConnection:
             await self.playlist.pop().delete_item()
         else:
             await self.playlist.pop(value).delete_item()
+            
+    async def reset_filters(self):
+        """ reset audio filters """
+        self.audio_filters = list() # reset audio_filters
+        await self.refresh_filters()
 
+    async def add_filter(self, filter):
+        """ add filter to audio filter list """
+        self.audio_filters.append(filter)
+        await self.refresh_filters()
+        
     async def _get_gpm_station(self, query):
         hits_list = gpmapi.search(query, max_results=1)
         if len(hits_list['station_hits']) > 0:
@@ -732,7 +772,7 @@ class Voice:
         if ctx.message.server.id in self.voice_connections:
             await self.voice_connections[ctx.message.server.id].resume()
 
-    @commands.command(name='queue', aliases=['q'], pass_context=True)
+    @commands.command(name='queue', aliases=['q', 'Q'], pass_context=True)
     async def get_queue(self, ctx):
         """sends the current queue to the chat"""
         if ctx.message.server.id in self.voice_connections:
@@ -740,7 +780,14 @@ class Voice:
                 ctx.message.server.id].get_queue_string()
             if len(queue_string) > 0:
                 await self.bot.send_message(ctx.message.channel, queue_string)
-
+    
+    @commands.command(name='dequeue', aliases=['deq'], pass_context=True)
+    async def remove_from_queue(self, ctx, index=1):
+        """removes the audio file at index from the queue"""
+        if ctx.message.server.id in self.voice_connections:
+            queue_string = await self.voice_connections[
+                ctx.message.server.id].dequeue(index)
+    
     @commands.command(name='stopradio', aliases=['sradio'], pass_context=True)
     async def stop_radio(self, ctx):
         """stops the radio!!!"""
@@ -785,7 +832,41 @@ class Voice:
                 self.voice_connections[ctx.message.server.id] = \
                     VoiceConnection(self.bot,
                         await self.bot.join_voice_channel(voice_channel))
-
+    
+    @commands.command(name='effect', pass_context=True)
+    async def add_effect(self, ctx, *, effect=""):
+        """ adds a given audio effect to the voice output
+        '`effect (EFFECT)' to apply EFFECT
+        These effects are additive (!!!!)
+        also, the bot has to be in a voice channel
+        
+        possible effects: 
+        reset - removes all filters currently applied
+        bb - bass boost
+        nc [sample rate] - time stretch (sample rate is 600000 if unspecified)
+        pulse - apulsator (headache inducer!!!)
+        
+        more info: https://ffmpeg.org/ffmpeg-filters.html#Audio-Filters
+        """
+        if ctx.message.server.id in self.voice_connections:
+            effect_split = effect.split()
+            if effect_split[0] == 'reset': #remove all filters
+                await self.voice_connections[
+                    ctx.message.server.id].reset_filters()
+            else: #add new ffmpegOption object to list
+                new_filter = None
+                if effect_split[0] == 'bb':
+                    new_filter = ffmpegOption('bass=gain=', '10')
+                elif effect_split[0] == 'nc':
+                    if len(effect_split) > 1 and effect_split[1].is_digit():
+                        new_filter = ffmpegOption('asetrate=', effect_split[1])
+                    else:
+                        new_filter = ffmpegOption('asetrate=', '60000')
+                elif effect_split[0] == 'pulse':
+                    new_filter = ffmpegOption('apulsator', '')
+                if new_filter is not None:
+                    await self.voice_connections[
+                        ctx.message.server.id].add_filter(new_filter)
 
 async def check_gpm_auth(client_type=0):
     """ check if gpm is logged in and is subbed"""
