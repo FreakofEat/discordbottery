@@ -107,7 +107,7 @@ class AudioItem:
 
 class VoiceConnection:
     """
-    Handles playing audio to it's specified channel (discord.VoiceClient obj)
+    Handles playing audio to its specified channel (discord.VoiceClient obj)
     """
     voice_client = None
     bot = None

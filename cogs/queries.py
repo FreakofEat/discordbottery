@@ -64,6 +64,7 @@ class Queries:
                                           safe=False, offset=offset)
         await self.bot.say(image_url)
 
+    '''
     @commands.command()
     async def copypasta(self, search=""):
         """Pastes a random copypasta (copypasterino.me)
@@ -105,7 +106,8 @@ class Queries:
                 await self.bot.say(pasta)
                 # print('done')
                 return
-
+    '''
+                
     @commands.command(pass_context=True)
     async def grammar(self, ctx):
         """checks for grammatical errors"""
