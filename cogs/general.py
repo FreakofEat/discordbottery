@@ -40,7 +40,10 @@ class General:
             is_tts = False
         cur = self.conn.cursor()
         cur.execute(
-            "INSERT INTO message_commands (invoke, message, istts, idk) VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING",
+            "INSERT INTO message_commands (invoke, message, istts, idk)"
+            " VALUES (%s, %s, %s, %s) "
+            "ON CONFLICT (invoke) "
+            "DO UPDATE SET message = EXCLUDED.message",
             [cmd_trigger, cmd, is_tts, True])
         self.conn.commit()
         cur.close()
