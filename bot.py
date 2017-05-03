@@ -56,10 +56,18 @@ async def on_message(message):
         await asyncio.sleep(3)
         await bot.send_message(message.channel, "THIS IS MY LAST RESORT")
     elif message.content.lower() == 'damn':
+        await bot.add_reaction(message, "🇩")
+        await bot.add_reaction(message, "🇦")
+        await bot.add_reaction(message, "🇳")
+        await bot.add_reaction(message, "🇮")
+        await bot.add_reaction(message, "🇪")
+        await bot.add_reaction(message, "🇱")
         if random.randint(0, 100) == 72:
-            await bot.send_message(message.channel, ":dd: daniel :dd:")
-        else:
-            await bot.send_message(message.channel, "daniel")
+            await bot.add_reaction(message, "‼")
+    elif message.content.lower() == '<:d_:309110665941876736>amn':
+        if message.server.id != '144849743368028160':
+            return
+        await bot.send_message(message.channel, "<:d_:309110665941876736>aniel")
     elif message.content.lower() in ('huda', 'hudda'): #TBH Not sure how it's spelled
         await bot.send_message(message.channel, "hecc")
     elif message.content.lower().find('vmboys') != -1:
@@ -69,7 +77,6 @@ async def on_message(message):
             await bot.send_message(message.channel, "haha, nice")
 
     await bot.process_commands(message)
-
 async def react_world(message):
     if message.server.id != '144849743368028160':
         return
@@ -86,20 +93,16 @@ async def react_world(message):
     # GANG'S ALL HERE
     if 'gang' in message.content.lower():
         emoji_list = message.server.emojis
-        gang = []
         for emoji in emoji_list:
             if 'gang' in emoji.name.lower():
-                gang.append(emoji)
-        for g_emoji in gang:
-            await bot.add_reaction(message, g_emoji)
+                await bot.add_reaction(message, emoji)
     # tim
     if message.author.id == '185607847294271488':
         emoji_list = message.server.emojis
         tim = "timgasm"
         for emoji in emoji_list:
             if 'timgasm' in emoji.name.lower():
-                tim = emoji
-        await bot.add_reaction(message, tim)
+                await bot.add_reaction(message, emoji)
 
 async def custom_command_check(message):
     query = message.content[1:]
