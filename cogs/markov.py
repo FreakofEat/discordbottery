@@ -18,7 +18,8 @@ class Markov:
         `markov [user] [seed]
         `markov without a user picks a random user
         seed must be exactly 2 words
-        a silent failure is likely due to an untalkative user being chosen"""
+        a silent failure is likely due to an untalkative user being chosen or
+        the previous `log data was deleted (so do `log again)"""
         server = ctx.message.server
         directory = 'data/' + server.name + ' - ' + server.id + '/Markov/'
         file_list = []
@@ -77,6 +78,7 @@ class Markov:
             print(user + ' markovnfail')
 
     def _get_random_markov_file(self, server):
+        """ Get a random user's log file """
         directory = 'data/' + server.name + ' - ' + server.id + '/Markov/'
         file_list = []
         for entry in os.scandir(directory):
@@ -115,7 +117,7 @@ class Markov:
 
     @commands.command(name='genMarkov', pass_context=True)
     async def _generate_markov(self, ctx):
-        """dont use this or the bot will be unusuable for like 30 mins"""
+        """useless function"""
         for server in self.bot.servers:
             directory = 'data/' + server.name + ' - ' + server.id + '/Markov/'
             for root, dirs, files in os.walk(directory):

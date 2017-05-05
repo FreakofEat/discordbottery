@@ -227,6 +227,7 @@ class Twitter:
     @commands.command()
     async def mentions(self):
         """last 20 tweets mentioning YOU"""
+        # Not complete yet
         url = 'https://api.twitter.com/1.1/statuses/mentions_timeline.json'
         t_params = self._generate_parameters()
         t_header = self._generate_header('get', url, t_params)
@@ -247,6 +248,7 @@ class Twitter:
             '''
 
     def _generate_signature(self, method, url, parameters):
+        """ Generates the OAuth signature (some research required) """
         enc_parameters = {}
         for key in parameters:
             enc_key = self._percent_enc(key)

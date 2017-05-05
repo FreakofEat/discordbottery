@@ -30,7 +30,7 @@ class Queries:
             await self.bot.say(
                 'why dont you actually search for something ? Hm?')
             return
-
+        # Checks if message has a number at the end (the index to return)
         num_test = query[1].rsplit(" ", 1)
         try:
             offset = int(num_test[1])-1
@@ -64,6 +64,7 @@ class Queries:
                                           safe=False, offset=offset)
         await self.bot.say(image_url)
 
+    # Webscraping
     '''
     @commands.command()
     async def copypasta(self, search=""):
@@ -148,6 +149,7 @@ class Queries:
 
 
 class _GetHtmlJs(threading.Thread):
+    """ used by get_html_js """
     def __init__(self, driver, url):
         threading.Thread.__init__(self)
         self.driver = driver
@@ -160,6 +162,8 @@ class _GetHtmlJs(threading.Thread):
         self.html = self.driver.page_source
 
 async def get_html_js(url):
+    """ get html from websites using ghostdriver
+    (bypasses some browser checks) """
     print('start')
     global js_driver
     if js_driver is None:

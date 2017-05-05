@@ -9,14 +9,11 @@ import psycopg2
 import urllib.parse
 import random
 
-
+# Store useful config vars
 config = configparser.ConfigParser()
 config.read('config')
-# bot_token = config['discord']['BotToken']
 command_trigger = config['messages']['commandTrigger']
 custom_trigger = config['messages']['customTrigger']
-# discord_token = os.environ['DISCORD_TOKEN']
-# bing_key = os.environ['BING_API_KEY']
 
 # Bot vars
 c_prefixes = ['`']
@@ -26,22 +23,25 @@ fun entertainment
 # help_attrs = dict()
 bot = commands.Bot(command_prefix=c_prefixes, description=description)
 
-# Postgres
-urllib.parse.uses_netloc.append("postgres")
-url = urllib.parse.urlparse(str(os.environ["DATABASE_URL"]))
-conn = psycopg2.connect(
-    database=url.path[1:],
-    user=url.username, password=url.password,
-    host=url.hostname, port=url.port
-)
+conn = None
+def connect_to_postgres():
+    """ Connects to the postgres server storing custom vars + bank(?)"""
+    # Postgres
+    urllib.parse.uses_netloc.append("postgres")
+    url = urllib.parse.urlparse(str(os.environ["DATABASE_URL"]))
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username, password=url.password,
+        host=url.hostname, port=url.port
+    )
 
 # General global vars
-c_commands = {}
-
+c_commands = {} # Stored custom commands from database
 
 @bot.event
 async def on_message(message):
-    # handles custom commands first
+""" Every message received goes through here """
+    # handles custom commands first, just fun stuff over here
     await react_world(message)
     if message.author.id == bot.user.id:
         return
@@ -75,9 +75,11 @@ async def on_message(message):
             await bot.send_message(message.channel, "_WHEEZE_")
         else:
             await bot.send_message(message.channel, "haha, nice")
-
+    # discordpy checks if the message is invoking a bot command and performs it
     await bot.process_commands(message)
+    
 async def react_world(message):
+    """ adds a reaction to a message """
     if message.server.id != '144849743368028160':
         return
     # SORRY REACTION
@@ -93,7 +95,7 @@ async def react_world(message):
     # GANG'S ALL HERE
     if 'gang' in message.content.lower():
         emoji_list = message.server.emojis
-        for emoji in emoji_list:
+        for emoji in emoji_list: # Iterating to find all relevant emojis
             if 'gang' in emoji.name.lower():
                 await bot.add_reaction(message, emoji)
     # tim
@@ -105,6 +107,7 @@ async def react_world(message):
                 await bot.add_reaction(message, emoji)
 
 async def custom_command_check(message):
+    """ checks for a custom command storing in the database and performs it"""
     query = message.content[1:]
     cur = conn.cursor()
     cur.execute("SELECT * FROM message_commands WHERE invoke = (%s)", [query])
@@ -122,6 +125,7 @@ async def custom_command_check(message):
     #     await voice_command(arguments, message)
 
 async def create_server_dirs():
+    """ Creates dirs to store temp files for each server """
     for server in bot.servers:
         if not os.path.exists('data/' + server.name + ' - ' + server.id):
             os.mkdir('data/' + server.name + ' - ' + server.id)
@@ -145,12 +149,14 @@ async def bank_setup():
 
 @bot.event
 async def on_server_join(server):
+    """ Creates a folder for the next server """
     if not os.path.exists('data/' + server.name + ' - ' + server.id):
         os.mkdir('data/' + server.name + ' - ' + server.id)
 
 
 @bot.event
 async def on_ready():
+    """ When the bot is logged in and ready to take commands """
     print('logged in as: ' + bot.user.name)
     print('bot id: ' + bot.user.id)
     await create_server_dirs()
@@ -160,20 +166,22 @@ async def on_ready():
 if __name__ == '__main__':
     if not os.path.exists('data'):
         os.mkdir('data')
-
+    
+    connect_to_postgres();
+    
     bot.add_cog(general.General(bot))
     bot.add_cog(voice.Voice(bot))
     bot.add_cog(queries.Queries(bot))
     bot.add_cog(games.Games(bot, conn))
     bot.add_cog(twitter.Twitter(bot))
     bot.add_cog(markov.Markov(bot))
-
+    
     task_obj = tasks.Tasks(bot)
-
+    
     bot.loop.create_task(task_obj.zooboys())
     bot.loop.create_task(task_obj.who_up())
     bot.run(str(os.environ['DISCORD_TOKEN']))
-
+    # Some cleanup if the bot is disconnected somehow
     queries.close_aiohttp()
     twitter.close_aiohttp()
     tasks.close_aiohttp()

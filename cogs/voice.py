@@ -13,6 +13,7 @@ gpmapi = Mobileclient(debug_logging=False)
 
 
 class UrlDownloader(threading.Thread):
+    """ Represents a url to be downloaded in a seperate thread """
     def __init__(self, url, file_location):
         threading.Thread.__init__(self)
         self.url = url
@@ -44,8 +45,8 @@ class AudioItem:
     sys_location = ""
     download_thread = None
     player = None
-    invoked_channel = None
-    invoker = None
+    invoked_channel = None # channel that requested the item
+    invoker = None # user that requested the item
 
     def __init__(self, url, title, audio_id, sys_location, invoked_channel,
                  invoker=""):
@@ -57,6 +58,7 @@ class AudioItem:
         self.invoker = invoker
 
     async def start_download(self):
+        # Begin download of relevant audio
         if not os.path.exists(self.sys_location):
             if self.url == "gpm":
                 # print(self.audio_id)
@@ -70,6 +72,7 @@ class AudioItem:
                 await asyncio.sleep(0.5)
 
     async def delete_item(self):
+        # Delete audio from filesystem
         if self.download_thread is not None:
             if self.download_thread == 'haha':
                 return
@@ -80,6 +83,7 @@ class AudioItem:
                 os.remove(self.sys_location)
 
     async def thumb_up(self):
+        # Thumb up song on google play (helps with radio)
         if self.audio_id[0] == 'T':
             song = gpmapi.get_track_info(self.audio_id)
             song['rating'] = '5'
@@ -109,23 +113,23 @@ class VoiceConnection:
     """
     Handles playing audio to its specified channel (discord.VoiceClient obj)
     """
-    voice_client = None
-    bot = None
-    playlist = None
-    cur_player = None
-    cur_song = None
-    radio_leftovers = []
-    radio_queue = None
-    radio_channel = None
-    title_queue = None
-    misc_audio = None
-    folder_path = ""
-    playlist_manager_lock = False
-    next_song = None
-    is_playing = False
-    play_next_lock = False
+    voice_client = None # Current discordpy voice client object
+    bot = None # Current bot object
+    playlist = None # deque of current playlist
+    cur_player = None # discordpy player object that is currently playing
+    cur_song = None # AudioItem of current audio
+    radio_leftovers = [] # Leftovers from the radio query that may be used
+    radio_queue = None # deque of current radio queue
+    radio_channel = None # channel that the radio was invoked in
+    title_queue = None # deque of audio titles
+    misc_audio = None # deque of misc AudioItems (from force_play)
+    folder_path = "" # Path to temp folder
+    playlist_manager_lock = False # Nothing atm
+    next_song = None # The next queued AudioItem that has begun downloading
+    is_playing = False # Is the voice_client playing audio atm?
+    play_next_lock = False # If an item in the queue is about to begin
     audio_filters = list() # holds ffmpegOption objects
-    ffmpeg_options = ''
+    ffmpeg_options = '' # A string of ffmpeg options to use
 
     def __init__(self, bot, voice_client):
         self.playlist = deque()
@@ -137,14 +141,15 @@ class VoiceConnection:
         start_path = 'data/' + self.voice_client.server.name + \
                      ' - ' + self.voice_client.server.id + '/Voice'
         self.folder_path = start_path + '/tempdownloads'
-        if os.path.exists(self.folder_path):
+        if os.path.exists(self.folder_path): # remove existing temp folder
             shutil.rmtree(self.folder_path, ignore_errors=True)
-        if not os.path.exists(start_path):
+        if not os.path.exists(start_path): # create temp folder
             os.mkdir(start_path)
         os.mkdir(self.folder_path)
 
     async def add_to_playlist(self, arguments, message):
         # TODO: youtube playlist support
+        # If something was previously paused
         if self.cur_player is not None and not self.cur_player.is_playing():
             self.cur_player.resume()
         query = message.content.split(" ", 1)
@@ -153,31 +158,33 @@ class VoiceConnection:
         else:
             query = ""
         # self.radio_leftovers = []
+        # Attempts to create an AudioItem from the given query + arguments
         audio_type, audio_item_list = await self.create_audio_item(
             arguments, query, message)
-        if audio_type == 'gpm radio':
-            self.radio_queue = deque()
-        for audio_item in audio_item_list:
-            if audio_item is None:
+        if audio_type == 'gpm radio':  # Reset radio queue if a new station 
+            self.radio_queue = deque() # has been given
+        for audio_item in audio_item_list: # A list is always (supposed to be)
+            if audio_item is None:         # returned
                 await self.bot.send_message(message.channel,
                                             "got nothing for you")
-            elif audio_type == 'gpm radio':
-                if len(self.playlist) == 0:
+            elif audio_type == 'gpm radio':  
+                if len(self.playlist) == 0:          
                     self.playlist.append(audio_item)
-                else:
+                else: # Radio songs always have lower priority than queries
                     self.radio_queue.append(audio_item)
-            else:
+            else: # Playlist is first populated with any new AudioItems
                 self.playlist.append(audio_item)
-        if len(self.playlist) == 0:
+        if len(self.playlist) == 0: # Certainly nothing was added
             return
-        if not self.is_playing:
+        if not self.is_playing: # Playlist is not empty and currently inactive
+            # Begin playing next song
             self.is_playing = True
-            self.play_next_lock = False
+            self.play_next_lock = False # Resets the variable in case of error
             self.cur_song = self.playlist.popleft()
             await self.cur_song.start_download()
-            self.cur_song.player = await self.play(self.cur_song)
-            self.cur_player = self.cur_song.player
-        if audio_type == 'gpm radio':
+            self.cur_song.player = await self.play(self.cur_song) # plays audio
+            self.cur_player = self.cur_song.player # potentially unnecessary
+        if audio_type == 'gpm radio': # populating the radio_queue
             print('adding some')
             await self._add_radio_leftovers(2)
             print('done')
@@ -186,6 +193,7 @@ class VoiceConnection:
                 await audio_item.start_download()
 
     async def force_play(self, arguments, query):
+        """ forces another item to play at the same time for an effect """
         temp, this_audio = await self.create_audio_item(arguments, query)
         if this_audio is None:
             return
@@ -200,19 +208,21 @@ class VoiceConnection:
         await this_audio.delete_item()
 
     async def play_next(self):
+        """ plays the next available AudioItem """
         try:
-            if self.voice_client is None:
+            if self.voice_client is None: # is this possible?
                 return
-            if self.play_next_lock:
+            if self.play_next_lock: # the next item is already beginning to play
                 return
-            self.play_next_lock = True
-            if self.next_song is not None:
+            self.play_next_lock = True # the next item is beginning to play
+            if self.next_song is not None: # if the next item was already loaded
                 self.cur_song = self.next_song
-            elif len(self.playlist) > 0:
+            elif len(self.playlist) > 0: # if something remains in the playlist
                 self.cur_song = self.playlist.popleft()
-            elif len(self.radio_queue) > 0:
+            elif len(self.radio_queue) > 0: # else in the radio queue
                 self.cur_song = self.radio_queue.popleft()
-            elif len(self.radio_leftovers) > 0:
+            elif len(self.radio_leftovers) > 0: # else in the radio leftovers
+                # checking to see if the bot is alone (no need for audio)
                 if len(self.voice_client.channel.voice_members) < 2:
                     return
                 radio_msg_content = 'adding to queue'
@@ -221,10 +231,12 @@ class VoiceConnection:
                 await self._add_radio_leftovers(
                     5, radio_msg=radio_msg, radio_msg_content=radio_msg_content)
                 self.cur_song = self.radio_queue.popleft()
-            else:
+            else: # no AudioItems left to play
                 self.is_playing = False
                 self.play_next_lock = False
                 return
+            # begin downloading item (a file can still be played by ffmpeg while
+            # downloading if properly stored, as it is in this implementation)
             await self.cur_song.start_download()
             self.cur_song.player = await self.play(self.cur_song)
             await self.bot.send_message(
@@ -232,18 +244,20 @@ class VoiceConnection:
             self.next_song = None
             self.cur_player = self.cur_song.player
             self.play_next_lock = False
+            # Attempt to preload the next AudioItem
             if len(self.playlist) > 0:
                 self.next_song = self.playlist.popleft()
                 await self.next_song.start_download()
-            elif len(self.radio_queue) < 5:
+            elif len(self.radio_queue) < 5: # try from radio queue
                 if len(self.voice_client.channel.voice_members) > 1:
                     await self._add_radio_leftovers(5-len(self.radio_queue))
-            if self.next_song is not None:
+            if self.next_song is not None: # preload
                 await self.next_song.start_download()
         except Exception as e:
-            print(repr(e))
+            print(repr(e)) # sad
 
     async def clean_up(self, audio_item):
+        """ removes the temp files and plays next item """
         try:
             # if self.next_song is None or self.next_song != audio_item:
             await audio_item.delete_item()
@@ -252,6 +266,7 @@ class VoiceConnection:
             print(repr(e))
 
     def after_audio(self, audio_item):
+        """ called after a player is finished """
         self.cur_song = None
         coro = self.clean_up(audio_item) # client.send_message(text_channel, 'fdsfsdf')
         fut = asyncio.run_coroutine_threadsafe(coro, self.bot.loop)
@@ -262,7 +277,9 @@ class VoiceConnection:
             print('uh oh')
             pass
 
-    async def play(self, audio_to_play):
+    async def play(self, audio_to_play : AudioItem):
+        """ plays the given AudioItem"""
+        # discordpy function
         cur_player = self.voice_client.create_ffmpeg_player(
             audio_to_play.sys_location,
             options=self.ffmpeg_options,
@@ -271,6 +288,7 @@ class VoiceConnection:
         return cur_player
     
     async def refresh_filters(self):
+        """ refresh the ffrmpeg_options string """
         if len(self.audio_filters) > 0:
             self.ffmpeg_options = '-filter:a "'
             for filter in self.audio_filters:
@@ -283,6 +301,9 @@ class VoiceConnection:
 
     async def _add_radio_leftovers(self, num_to_add, radio_msg=None,
                                    radio_msg_content=""):
+        """ adds songs from initial radio query to the radio queue.
+        All songs aren't added from the radio by initially since the
+        initial query returns like 100 songs """
         # radio_msg_content = 'getting 5 more songs'
         # radio_msg = await client.send_message(self.radio_channel,
         #                                       radio_msg_content)
@@ -299,6 +320,7 @@ class VoiceConnection:
             leftovers_to_add, radio_msg, radio_msg_content)
 
     async def _get_from_ydl_playlist(self, arguments, query, message=None):
+        """ incomplete """
         with youtube_dl.YoutubeDL({
                 'default_search': 'auto',
                 'playlistend': 10,
@@ -313,18 +335,29 @@ class VoiceConnection:
             ydl_results = ydl.extract_info(query, download=False)
 
     async def create_audio_item(self, arguments, query, message=None):
+        """ creates an AudioItem object based on the query and arguments 
+        query would represent a url to process through youtube-dl or
+        a search query to be used by youtube-dl or gpm (depending on
+        the arguments) or empty for a random radio from gpm
+        
+        always should return a tuple of type (str, list()) representing the 
+        result of the function and the created AudioItems (if any)
+        
+        much of the confusion in this implementation & this entire class is due 
+        to the fact that I decided to reuse code from a previous version of this
+        bot over doing a full rewrite of this part. Mistake!"""
         # this is it
         # the stuff happens here!!!
-        if arguments[2] == 'website':
+        if arguments[2] == 'website': # use youtube-dl
             with youtube_dl.YoutubeDL({
-                    'default_search': 'auto',
+                    'default_search': 'auto', # search if url is not detected
                     'playlistend': 10,
                     'prefer_ffmpeg': True,
                     # 'ignoreerrors': True,
-                    'format': 'bestaudio/best',
-                    'outtmpl': self.folder_path + '%(id)s.%(ext)s',
-                    'nopart': True,
-                    'ratelimit': 4000000,
+                    'format': 'bestaudio/best', # prefer best audio only format
+                    'outtmpl': self.folder_path + '%(id)s.%(ext)s', # save path
+                    'nopart': True, # download + write into the output file
+                    'ratelimit': 4000000, # download speed limit (very high)
                     # 'logger': curLog,
                     'fixup': "warn"}) as ydl:
                 try:
@@ -336,18 +369,19 @@ class VoiceConnection:
                         "some error, video not found or it's blocked in the US :(")
                     return 'error', [None]
                 # Just a youtube search
-                if arguments[1] == '*CHECK_MESSAGESEARCH*':
+                if arguments[1] == '*CHECK_MESSAGESEARCH*': # show found video
                     await self.bot.send_message(
                         message.channel,
                         ydl_results['entries'][0]['webpage_url'])
                     return 'search', [None]
                 # Create and return AudioItems
-                if 'entries' in ydl_results:
+                if 'entries' in ydl_results: # a playlist was given
                     await self.bot.send_message(
                         message.channel,
                         ydl_results['entries'][0]['webpage_url'])
                     items = []
                     for result in ydl_results['entries']:
+                        # creates an AudioItem for the current result
                         url = result['url']
                         if 'uploader' in result:
                             title = result['title'] + ' - ' + result['uploader']
@@ -360,6 +394,8 @@ class VoiceConnection:
                             url, title, audio_id, system_location,
                             message.channel, message.author.name))
                     return 'ydl playlist', items
+                # a playlist was NOT given:
+                # creates an AudioItem based off result
                 url = ydl_results['url']
                 title = ydl_results['title'] + ' - ' + ydl_results['uploader']
                 audio_id = ydl_results['id']
@@ -368,11 +404,11 @@ class VoiceConnection:
                 return 'ydl single', [AudioItem(
                     url, title, audio_id, system_location, message.channel,
                     message.author.name)]
-        elif arguments[2] == 'gpm':
-            if not await check_gpm_auth(client_type=0):
+        elif arguments[2] == 'gpm': # something from google play music
+            if not await check_gpm_auth(client_type=0): # login to account
                 return 'auth fail', [None]
-            if arguments[1] == "*CHECK_MESSAGERADIO*":
-                if len(query) > 0:
+            if arguments[1] == "*CHECK_MESSAGERADIO*": # radio query
+                if len(query) > 0: # if a radio seed of sorts was given
                     title, station_id = await self._get_gpm_station(query)
                     if station_id is None:
                         return 'gpm radio no results', [None]
@@ -383,23 +419,26 @@ class VoiceConnection:
                     song_list = gpmapi.get_station_tracks(station_id,
                                                           num_tracks=50)
                     #gpmapi.delete_stations([station_id])
-                else:
+                else: # get a random radio station (IFL)
                     song_list = gpmapi.get_station_tracks('IFL', num_tracks=50)
                     radio_msg_content = 'starting random radio'
                     radio_msg = await self.bot.send_message(message.channel,
                                                             radio_msg_content)
-                self.radio_leftovers = song_list[1:]
+                self.radio_leftovers = song_list[1:] # store leftovers
+                # create AudioItem of first result
                 title, song_item = await self._get_gpm_song(song_list[0],
                                                             message.channel)
-                song_item.set_invoker(message.author.name)
+                song_item.set_invoker(message.author.name) # who requested it
                 self.radio_channel = message.channel
                 return 'gpm radio', [song_item]
-            elif arguments[1] == '*CHECK_MESSAGEALBUM*':
+            elif arguments[1] == '*CHECK_MESSAGEALBUM*': # album query
+                # check if a search index was given
                 test_pos = query.rsplit(" ", 1)
                 if test_pos[0].isdigit():
                     pos = int(test_pos[0]) - 1
                 else:
                     pos = 0
+                # perform search
                 search = gpmapi.search(query, max_results=10)
                 if len(search['album_hits']) > 0:
                     album_dict = search['album_hits'][pos]['album']
@@ -409,18 +448,19 @@ class VoiceConnection:
                     song_list = gpmapi.get_album_info(
                         album_dict['albumId'])['tracks']
                     songs = []
-                    for song in song_list:
+                    for song in song_list: # make AudioItems of each song
                         title, song_item = await self._get_gpm_song(
                             song, message.channel)
                         song_item.set_invoker(message.author.name)
                         songs.append(song_item)
-                else:
+                else: # no albums found
                     return 'gpm album no results', [None]
                 return 'gpm album', songs
-            else:
+            else: # regular song search
                 song_list = gpmapi.search(query, max_results=1)
                 if len(song_list['song_hits']) > 0:
                     track_dict = song_list['song_hits'][0]['track']
+                    # create AudioItem of found song
                     title, song_item = await self._get_gpm_song(track_dict,
                                                                 message.channel)
                     await self.bot.send_message(message.channel, title)
@@ -431,6 +471,7 @@ class VoiceConnection:
         print('create failed')
 
     async def stop(self):
+        """ stops current AudioItem and tries to play next """
         if len(self.misc_audio) > 0:
             self.misc_audio.popleft().player.stop()
         elif self.cur_player is not None:
@@ -439,12 +480,14 @@ class VoiceConnection:
             # await self.clean_up()
 
     async def leave(self):
+        """ clears queue and leaves the voice channel """
         await self.clear()
-        if os.path.exists(self.folder_path):
+        if os.path.exists(self.folder_path): # remove temp files
             shutil.rmtree(self.folder_path, ignore_errors=True)
         await self.voice_client.disconnect()
 
     async def clear(self):
+        """ resets all queues """
         try:
             self.radio_queue = deque()
             self.radio_leftovers = []
@@ -456,6 +499,7 @@ class VoiceConnection:
             print(repr(e))
 
     async def pause(self):
+        """ pause audio """
         if self.cur_player is not None and self.cur_player.is_playing():
             self.cur_player.pause()
 
@@ -464,10 +508,12 @@ class VoiceConnection:
             self.cur_player.resume()
 
     async def stop_radio(self):
+        """ remove all queued radio songs """
         self.radio_queue = deque()
         self.radio_leftovers = []
 
     async def get_queue_string(self):
+        """ string representation of the queue """
         queue = ''
         if self.cur_song is not None:
             queue += 'Now: {} ({})\n'.format(self.cur_song.title,
@@ -485,6 +531,7 @@ class VoiceConnection:
         return queue
 
     async def dequeue(self, value):
+        """ remove an AudioItem at a certain index """
         if value >= len(self.playlist):
             await self.playlist.pop().delete_item()
         else:
@@ -501,24 +548,28 @@ class VoiceConnection:
         await self.refresh_filters()
         
     async def _get_gpm_station(self, query):
+        """ searches for a gpm station based on the query 
+        first finds a relevant seed based on query then creates the station """
         hits_list = gpmapi.search(query, max_results=1)
-        if len(hits_list['station_hits']) > 0:
+        if len(hits_list['station_hits']) > 0: # is a specific station found?
             station_dict = hits_list['station_hits'][0]['station']
             title = station_dict['name'] + " (Pre-made station)"
             if 'curatedStationId' in station_dict['seed']:
+                # is a pre-made station by staff
                 audio_id = station_dict['seed']['curatedStationId']
                 station_id = gpmapi.create_station('discord radio',
                                                    curated_station_id=audio_id)
             elif 'genreId' in station_dict['seed']:
+                # query is a genre
                 audio_id = station_dict['seed']['genreId']
                 station_id = gpmapi.create_station('discord radio',
                                                    genre_id=audio_id)
             else:
                 station_id = None
-            if station_id is not None:
+            if station_id is not None: # station successfully made
                 return title, station_id
 
-        if len(hits_list['song_hits']) > 0:
+        if len(hits_list['song_hits']) > 0: # is a related song found?
             track_dict = hits_list['song_hits'][0]['track']
             if 'id' in track_dict:
                 audio_id = track_dict['id']
@@ -532,14 +583,14 @@ class VoiceConnection:
                 'artist']
             station_id = gpmapi.create_station('discord radio',
                                                track_id=audio_id)
-        elif len(hits_list['album_hits']) > 0:
+        elif len(hits_list['album_hits']) > 0: # is a related album found?
             album_dict = hits_list['album_hits'][0]['album']
             audio_id = album_dict['albumId']
             title = album_dict['name'] + ' -- ' + album_dict[
                 'artist']
             station_id = gpmapi.create_station('discord radio',
                                                album_id=audio_id)
-        elif len(hits_list['artist_hits']) > 0:
+        elif len(hits_list['artist_hits']) > 0: # is a related artist found?
             artist_dict = hits_list['artist_hits'][0]['artist']
             audio_id = artist_dict['artistId']
             title = artist_dict['name'] + ' (artist)'
@@ -551,6 +602,8 @@ class VoiceConnection:
 
     async def _put_radio_songs(self, song_list, radio_msg=None,
                                radio_msg_content=""):
+        """ creates AudioItems based on the song_list given from a previous
+        gpm radio query """
         song_items = []
         for track_dict in song_list:
             title, song_item = await self._get_gpm_song(track_dict,
@@ -563,6 +616,7 @@ class VoiceConnection:
         return song_items
 
     async def _get_gpm_song(self, track_dict, channel):
+        """ creates an AudioItem based on the given gpm track_dict """
         title = track_dict['title'] + ' - ' + track_dict['artist']
         if 'id' in track_dict:
             audio_id = track_dict['id']
@@ -605,7 +659,7 @@ class Voice:
 
     def __init__(self, bot: commands.Bot, v_c=None):
         self.bot = bot
-        if os.path.exists('vendor'):
+        if os.path.exists('vendor'): # Required for discord voice
             discord.opus.load_opus('vendor/lib/libopus.so.0')
         if v_c is not None:
             self.voice_connections = v_c
@@ -640,7 +694,7 @@ class Voice:
     async def search_youtube(self, ctx):
         """searches for a query on youtube"""
         msg = ctx.message.content.split(" ", 1)
-        if len(msg) == 1:
+        if len(msg) == 1: # If no query was given
             ctx.message.content = '`youtubesearch ys joanna newsom'
 
         if self.voice_connections.get(ctx.message.server.id) is None:
@@ -726,7 +780,7 @@ class Voice:
             self.voice_connections[ctx.message.server.id] = \
                 VoiceConnection(
                     self.bot, await self.bot.join_voice_channel(voice_channel))
-
+                    
         arguments = ['voice', '*CHECK_MESSAGERADIO*', 'gpm', 'false']
 
         await self.voice_connections[ctx.message.server.id].add_to_playlist(

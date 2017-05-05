@@ -18,13 +18,14 @@ class Games:
 
     @commands.command()
     async def play(self):
+        """ games """
         await self.bot.say('i dont know how to')
 
     @commands.command(pass_context=True)
     async def roll(self, ctx):
         """Rolls a dice in NdN format.
         (fully copied from the samples hahahahahah)"""
-        # TODO: fix this
+        # TODO: fix this - forgot what to fix
         split = ctx.message.content.split()
         if len(split) == 1:
             dice = '1d6'

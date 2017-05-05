@@ -13,6 +13,7 @@ class General:
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        # Connects to database to be able to store new commands from `add
         urllib.parse.uses_netloc.append("postgres")
         url = urllib.parse.urlparse(str(os.environ["DATABASE_URL"]))
         self.conn = psycopg2.connect(
@@ -39,7 +40,8 @@ class General:
         else:
             is_tts = False
         cur = self.conn.cursor()
-        cur.execute(
+        # Postgres query
+        cur.execute( 
             "INSERT INTO message_commands (invoke, message, istts, idk)"
             " VALUES (%s, %s, %s, %s) "
             "ON CONFLICT (invoke) "
@@ -73,7 +75,7 @@ class General:
     @commands.command()
     async def me(self):
         """look at me"""
-        await self.bot.say('https://github.com/FreakofEat/discordbottery')
+        await self.bot.say('https://github.com/oyisre/discordbottery')
 
     @commands.command(pass_context=True)
     async def spoiler(self, ctx, *, message: str):

@@ -15,6 +15,7 @@ class Tasks:
         self.bot = bot
 
     async def zooboys(self):
+        """ sends a message to a certain server at the specified time """
         await self.bot.wait_until_ready()
         while not self.bot.is_closed:
             cur_time = time.localtime()
@@ -24,6 +25,7 @@ class Tasks:
             await asyncio.sleep(60)
 
     async def who_up(self):
+        """ night watch """
         await self.bot.wait_until_ready()
         who_up_words = ['NOTION', 'NUTRIENT', 'SAD', ':clown::clown::clown:',
                         'NEIGHBOUR', 'WILD', 'THOT', 'DANIEL', 'NEUTRON', 'gnarls barkley',
@@ -42,8 +44,9 @@ class Tasks:
                 await self.bot.send_message(self.bot.get_channel(
                     '144849743368028160'), "WHO UP")
 
-
-                res = 'first'
+                # Useless now that the bing image api is gone
+                #res = 'first'
+                res = None
                 while res is not None:
                     res = await self.bot.wait_for_message(
                         timeout=180,
