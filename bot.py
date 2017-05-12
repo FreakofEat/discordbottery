@@ -7,7 +7,6 @@ from cogs import general, games, voice, queries, twitter, markov, tasks
 import os
 import psycopg2
 import urllib.parse
-import random
 
 # Store useful config vars
 config = configparser.ConfigParser()
@@ -40,7 +39,7 @@ c_commands = {} # Stored custom commands from database
 
 @bot.event
 async def on_message(message):
-""" Every message received goes through here """
+    """ Every message received goes through here """
     # handles custom commands first, just fun stuff over here
     await react_world(message)
     if message.author.id == bot.user.id:

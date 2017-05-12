@@ -85,7 +85,7 @@ class Markov:
             if entry.is_file() and entry.name.endswith('.json'):
                 file_list.append(entry.name)
         file = file_list[random.randrange(0, stop=len(file_list))]
-        user = file[0:-5]
+        user = file[0:-5] # remove '.json' to get user id
         for member in server.members:
             if member.id == user:
                 user = member.name
@@ -94,22 +94,27 @@ class Markov:
     @commands.command(name='log', pass_context=True)
     async def _get_logs(self, ctx):
         """grabs the entire chatlog of the server. don't use it more than 
-        once every few minutes or else.........."""
-        for server in self.bot.servers:
-            directory = 'data/' + server.name + ' - ' + server.id + '/Markov'
-            if not os.path.exists(directory):
-                os.mkdir(directory)
-            directory += '/'
-            print(directory)
-            users = dict()
-            for channel in server.channels:
-                async for message in self.bot.logs_from(channel, limit=100000):
-                    if not message.content.startswith('`markov') or \
-                            not message.content.startswith('`markovn'):
-                        if message.author.id in users.keys():
-                            users[message.author.id] += message.content + '\n'
-                        else:
-                            users[message.author.id] = message.content + '\n'
+        once in a while or else.........."""
+        # get current server
+        server = None
+        for s in self.bot.servers:
+            if s == ctx.server:
+                server = s
+        # create folder for server log
+        directory = 'data/' + server.name + ' - ' + server.id + '/Markov'
+        if not os.path.exists(directory):
+            os.mkdir(directory)
+        directory += '/'
+        print(directory)
+        users = dict()
+        for channel in server.channels:
+            async for message in self.bot.logs_from(channel, limit=100000):
+                if not message.content.startswith('`markov') or \
+                        not message.content.startswith('`markovn'):
+                    if message.author.id in users.keys():
+                        users[message.author.id] += message.content + '\n'
+                    else:
+                        users[message.author.id] = message.content + '\n'
             for key in users.keys():
                 with open(directory + key, mode='w', encoding='utf-8') as file:
                     file.write(users[key])
