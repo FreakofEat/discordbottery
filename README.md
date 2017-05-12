@@ -1,8 +1,8 @@
 # botterypottery
-## the world's first computer application
+### the world's first computer application
 
 An ever changing number of environment variables are required to be set for full functionality of the bot, so you probably shouldn't bother.
-(Though, you may be able to get with just DISCORD_TOKEN as your discord bot's token and by commenting any erroneous lines (and by looking at the discordpy requirements))
+(Though, you may be able to get by with just DISCORD_TOKEN set to your discord bot's token and by commenting any erroneous lines (and by looking at the discordpy requirements))
 
 Rather, you should just copy the bits of code that are relevant to you and add it to your own project.
 
