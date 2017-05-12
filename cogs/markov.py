@@ -98,7 +98,7 @@ class Markov:
         # get current server
         server = None
         for s in self.bot.servers:
-            if s == ctx.server:
+            if s == ctx.message.server:
                 server = s
         # create folder for server log
         directory = 'data/' + server.name + ' - ' + server.id + '/Markov'
