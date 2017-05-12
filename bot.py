@@ -74,6 +74,8 @@ async def on_message(message):
             await bot.send_message(message.channel, "_WHEEZE_")
         else:
             await bot.send_message(message.channel, "haha, nice")
+    elif message.content.lower().find('cuck') != -1:
+        await bot.add_reaction(message, "😳")
     # discordpy checks if the message is invoking a bot command and performs it
     await bot.process_commands(message)
     
