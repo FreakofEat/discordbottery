@@ -26,6 +26,7 @@ conn = None
 def connect_to_postgres():
     """ Connects to the postgres server storing custom vars + bank(?)"""
     # Postgres
+    global conn
     urllib.parse.uses_netloc.append("postgres")
     url = urllib.parse.urlparse(str(os.environ["DATABASE_URL"]))
     conn = psycopg2.connect(
@@ -168,7 +169,7 @@ if __name__ == '__main__':
     if not os.path.exists('data'):
         os.mkdir('data')
     
-    connect_to_postgres();
+    connect_to_postgres()
     
     bot.add_cog(general.General(bot))
     bot.add_cog(voice.Voice(bot))
