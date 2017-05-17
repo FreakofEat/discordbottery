@@ -45,8 +45,9 @@ class Twitter:
             if r.status != 200:
                 await self.bot.say(json['errors'][0]['message'])
                 return
-            await self.bot.say('https://twitter.com/botterypottery/status/' +
-                               json['id_str'])
+            temp = 'Tweeted: {}\nhttps://twitter.com/botterypottery/status/{}'
+            temp.format(message, json['id_str'])
+            await self.bot.say(temp)
 
     @commands.command()
     async def follow(self, user: str = ""):
