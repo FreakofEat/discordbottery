@@ -164,7 +164,9 @@ class VoiceConnection:
         if audio_type == 'gpm radio':  # Reset radio queue if a new station 
             self.radio_queue = deque() # has been given
         for audio_item in audio_item_list: # A list is always (supposed to be)
-            if audio_item is None:         # returned
+                                           # returned
+            # Suppress error message if only searching
+            if audio_item is None and arguments[1] != '*CHECK_MESSAGESEARCH*':
                 await self.bot.send_message(message.channel,
                                             "got nothing for you")
             elif audio_type == 'gpm radio':  
