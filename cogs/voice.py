@@ -49,13 +49,14 @@ class AudioItem:
     invoker = None # user that requested the item
 
     def __init__(self, url, title, audio_id, sys_location, invoked_channel,
-                 invoker=""):
+                 invoker="", gpm_track_dict=None):
         self.url = url
         self.title = title
         self.audio_id = audio_id
         self.sys_location = sys_location
         self.invoked_channel = invoked_channel
         self.invoker = invoker
+        self.gpm_track_dict = gpm_track_dict
 
     async def start_download(self):
         # Begin download of relevant audio
@@ -64,7 +65,14 @@ class AudioItem:
                 # print(self.audio_id)
                 self.url = gpmapi.get_stream_url(
                     self.audio_id, str(os.environ['GPM_DEVICEID'])[2:])
-                gpmapi.increment_song_playcount(self.audio_id)
+                '''
+                if self.gpm_track_dict is not None and \
+                        'id' in self.gpm_track_dict:
+                    try:
+                        gpmapi.increment_song_playcount(self.gpm_track_dict['id'])
+                    except: # lol
+                        pass
+                '''
             self.download_thread = UrlDownloader(self.url, self.sys_location)
             self.download_thread.start()
             while not os.path.exists(self.sys_location) or \
@@ -633,7 +641,7 @@ class VoiceConnection:
         #url = gpmapi.get_stream_url(audio_id,
         #                            config['gpm']['DeviceID'][2:])
         song_item = AudioItem("gpm", title, audio_id, system_location,
-                              channel)
+                              channel, track_dict=track_dict)
         # await song_item.start_download()
         '''except:
             global gpmMM_logged_in
@@ -661,8 +669,10 @@ class Voice:
 
     def __init__(self, bot: commands.Bot, v_c=None):
         self.bot = bot
+        ''' # rely on autoload
         if os.path.exists('vendor'): # Required for discord voice
             discord.opus.load_opus('vendor/lib/libopus.so.0')
+        '''
         if v_c is not None:
             self.voice_connections = v_c
         else:
