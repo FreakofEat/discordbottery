@@ -669,10 +669,8 @@ class Voice:
 
     def __init__(self, bot: commands.Bot, v_c=None):
         self.bot = bot
-        ''' # rely on autoload
         if os.path.exists('vendor'): # Required for discord voice
-            discord.opus.load_opus('vendor/lib/libopus.so.0')
-        '''
+            discord.opus.load_opus('opus/lib/libopus.so.0')
         if v_c is not None:
             self.voice_connections = v_c
         else:
