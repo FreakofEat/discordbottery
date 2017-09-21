@@ -45,9 +45,9 @@ class Twitter:
             if r.status != 200:
                 await self.bot.say(json['errors'][0]['message'])
                 return
-            temp = 'Tweeted: {}\nhttps://twitter.com/botterypottery/status/{}'
-            temp = temp.format(message, json['id_str'])
-            await self.bot.say(temp)
+            bot_msg = 'Tweeted: {}\nhttps://twitter.com/{}/status/{}'
+            bot_msg = bot_msg.format(message, str(os.environ['TWITTER_NAME']) json['id_str'])
+            await self.bot.say(bot_msg)
 
     @commands.command()
     async def follow(self, user: str = ""):
@@ -170,8 +170,9 @@ class Twitter:
             if r.status != 200:
                 await self.bot.say(json['errors'][0]['message'])
                 return
-            await self.bot.say('https://twitter.com/botterypottery/status/' + \
-                               json['id_str'])
+            bot_msg = 'https://twitter.com/{}/status/{}'.format(
+                        str(os.environ['TWITTER_NAME']), json['id_str'])
+            await self.bot.say(bot_msg)
 
     @commands.command()
     async def trends(self, *, message: str = ""):
@@ -214,7 +215,7 @@ class Twitter:
                                          id=str(woeid))
         # enc_msg = self._percent_enc(message)
         async with session.get(
-                url, params=[('id', woeid)], headers=t_header) as r:
+                url, params={'id': woeid}, headers=t_header) as r:
             json = await r.json()
             if r.status != 200:
                 await self.bot.say(json['errors'][0]['message'])
@@ -226,27 +227,37 @@ class Twitter:
             await self.bot.say(output)
 
     @commands.command()
-    async def mentions(self):
-        """last 20 tweets mentioning YOU"""
+    async def mentions(self, num : int = 20):
+        """last 20 (or more) tweets mentioning YOU"""
         # Not complete yet
+        # https://dev.twitter.com/rest/reference/get/statuses/mentions_timeline
         url = 'https://api.twitter.com/1.1/statuses/mentions_timeline.json'
         t_params = self._generate_parameters()
-        t_header = self._generate_header('get', url, t_params)
+        t_header = self._generate_header('get', url, t_params, count=num, 
+                                         include_rts='1', trim_user='true',
+                                         include_entities='false')
         # enc_msg = self._percent_enc(message)
+        params = {'count': num, 'include_rts': '1', 'trim_user': 'true',
+                  'include_entities': 'false'}
         async with session.get(
-                url, headers=t_header) as r:
+                url, params=params, headers=t_header) as r:
             json = await r.json()
             if r.status != 200:
                 await self.bot.say(json['errors'][0]['message'])
                 return
-            '''
+            
             output = ""
-            for trend in json[0]['trends']:
-                output += '\n"' + trend['name'] + '"'
-                if trend['tweet_volume'] is not None:
-                    output += ': ' + str(trend['tweet_volume']) + ' tweets'
+            for item in json:
+                link = 'https://twitter.com/{}/status/{}'
+                link.format(item['user']['screen_name'], item['id_str'])
+                output += link + '\n'
             await self.bot.say(output)
-            '''
+    
+    @commands.command(name='itweet')
+    async def tweet_media(self, *, urls):
+        """ tweet with embedded media (image or video) """
+        # https://dev.twitter.com/rest/media/uploading-media
+        return
 
     def _generate_signature(self, method, url, parameters):
         """ Generates the OAuth signature (some research required) """
