@@ -46,7 +46,7 @@ class Twitter:
                 await self.bot.say(json['errors'][0]['message'])
                 return
             bot_msg = 'Tweeted: {}\nhttps://twitter.com/{}/status/{}'
-            bot_msg = bot_msg.format(message, str(os.environ['TWITTER_NAME']) json['id_str'])
+            bot_msg = bot_msg.format(message, str(os.environ['TWITTER_NAME']), json['id_str'])
             await self.bot.say(bot_msg)
 
     @commands.command()
