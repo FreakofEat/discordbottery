@@ -641,7 +641,7 @@ class VoiceConnection:
         #url = gpmapi.get_stream_url(audio_id,
         #                            config['gpm']['DeviceID'][2:])
         song_item = AudioItem("gpm", title, audio_id, system_location,
-                              channel, track_dict=track_dict)
+                              channel, gpm_track_dict=track_dict)
         # await song_item.start_download()
         '''except:
             global gpmMM_logged_in
