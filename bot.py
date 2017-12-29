@@ -77,6 +77,9 @@ async def on_message(message):
             await bot.send_message(message.channel, "haha, nice")
     elif message.content.lower().find('cuck') != -1:
         await bot.add_reaction(message, "😳")
+    # terrible stuff ahead:
+    elif len(message.content.split()) == 1 and message.content.lower()[0] == 'w' and message.content.lower()[-1] == 'w':
+        await bot.add_reaction(message, "<:Wooooow:230403057433837579>")
     # discordpy checks if the message is invoking a bot command and performs it
     await bot.process_commands(message)
     
