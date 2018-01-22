@@ -2,7 +2,7 @@ cffi==1.10.0
 PyNaCl==1.1.2
 discord.py[voice]==0.16.7
 gmusicapi==11.*
-youtube-dl>=2017.04.28
+youtube-dl>=2018.01.21
 psycopg2==2.7.1
 selenium==3.4.0
 markovify==0.6.0
