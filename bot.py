@@ -80,6 +80,10 @@ async def on_message(message):
     # terrible stuff ahead:
     elif len(message.content.split()) == 1 and message.content.lower()[0] == 'w' and message.content.lower()[-1] == 'w':
         await bot.add_reaction(message, ":Wooooow:230403057433837579")
+    elif message.content.lower().find('nilo') != -1:
+        await bot.add_reaction(message, ":nilo:318197844542619658")
+    elif message.content.lower().find('karam') != -1:
+        await bot.add_reaction(message, ":karam:317107244745621514")
     # discordpy checks if the message is invoking a bot command and performs it
     await bot.process_commands(message)
     
