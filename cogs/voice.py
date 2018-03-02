@@ -407,7 +407,11 @@ class VoiceConnection:
                 # a playlist was NOT given:
                 # creates an AudioItem based off result
                 url = ydl_results['url']
-                title = ydl_results['title'] + ' - ' + ydl_results['uploader']
+                # direct videos don't have these
+                if 'title' in ydl_results and 'uploader' in ydl_results:
+                    title = ydl_results['title'] + ' - ' + ydl_results['uploader']
+                else:
+                    title = ydl_results['id']
                 audio_id = ydl_results['id']
                 system_location = self.folder_path + '/' + audio_id + \
                     '.' + ydl_results['ext']
