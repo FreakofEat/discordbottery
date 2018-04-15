@@ -108,12 +108,14 @@ async def react_world(message):
             if 'gang' in emoji.name.lower():
                 await bot.add_reaction(message, emoji)
     # tim
+    '''
     if message.author.id == '185607847294271488':
         emoji_list = message.server.emojis
         tim = "timgasm"
         for emoji in emoji_list:
             if 'timgasm' in emoji.name.lower():
                 await bot.add_reaction(message, emoji)
+    '''
 
 async def custom_command_check(message):
     """ checks for a custom command storing in the database and performs it"""
