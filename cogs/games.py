@@ -2,6 +2,7 @@ from discord.ext import commands
 import random
 import psycopg2
 import urllib.parse
+import asyncio
 
 
 # TODO: gambling & games
@@ -40,7 +41,8 @@ class Games:
         roll_msg_content = 'Rolling'
         roll_msg = await self.bot.send_message(ctx.message.channel,
                                                roll_msg_content)
-        for i in range(random.randint(2, 6)):
+        for i in range(random.randint(2, 5)):
+            await asyncio.sleep(0.25)
             roll_msg_content += '.'
             await self.bot.edit_message(roll_msg, roll_msg_content)
         
