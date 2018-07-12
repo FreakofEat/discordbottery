@@ -38,7 +38,7 @@ class Games:
             return
             
         roll_msg_content = 'Rolling'
-        roll_msg = await self.bot.send_message(message.channel,
+        roll_msg = await self.bot.send_message(ctx.message.channel,
                                                roll_msg_content)
         for i in random.randint(2, 6):
             roll_msg_content += '.'
