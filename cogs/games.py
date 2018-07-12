@@ -36,9 +36,16 @@ class Games:
         except Exception:
             await self.bot.say('Format has to be in NdN!')
             return
-
+            
+        roll_msg_content = 'Rolling'
+        roll_msg = await self.bot.send_message(message.channel,
+                                               roll_msg_content)
+        for i in random.randint(2, 6):
+            roll_msg_content += '.'
+            await self.bot.edit_message(roll_msg, roll_msg_content)
+        
         result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
-        await self.bot.say(result)
+        await self.bot.edit_message(roll_msg, result)
 
     '''
     @commands.command(pass_context=True)
