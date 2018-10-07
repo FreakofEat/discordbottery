@@ -46,6 +46,7 @@ class Games:
             roll_msg_content += '.'
             await self.bot.edit_message(roll_msg, roll_msg_content)
         
+        await asyncio.sleep(0.5)
         result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
         await self.bot.edit_message(roll_msg, result)
 
